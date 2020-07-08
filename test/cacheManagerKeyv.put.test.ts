@@ -56,12 +56,10 @@ describe("put tests", () => {
     const body = { test: "body" };
     const response = new fetch.Response(Buffer.from(JSON.stringify(body)), {});
     return expect(
-      (
-        await cacheManager.put(
-          new fetch.Request("https://example.com"),
-          response
-        )
-      ).json()
+      (await cacheManager.put(
+        new fetch.Request("https://example.com"),
+        response
+      )).json()
     ).to.eventually.deep.equal(body);
   });
 
@@ -83,12 +81,10 @@ describe("put tests", () => {
       .onFirstCall()
       .returns({ metadata: { url: "https://example.com" } });
     return expect(
-      (
-        await cacheManager.put(
-          new fetch.Request("https://example.com", { method: "head" }),
-          response
-        )
-      ).json()
+      (await cacheManager.put(
+        new fetch.Request("https://example.com", { method: "head" }),
+        response
+      )).json()
     ).to.eventually.deep.equal(body);
   });
 
@@ -101,12 +97,10 @@ describe("put tests", () => {
       .onFirstCall()
       .returns({ metadata: { url: "https://example.com" } });
     return expect(
-      (
-        await cacheManager.put(
-          new fetch.Request("https://example.com"),
-          response
-        )
-      ).json()
+      (await cacheManager.put(
+        new fetch.Request("https://example.com"),
+        response
+      )).json()
     ).to.eventually.deep.equal(body);
   });
 

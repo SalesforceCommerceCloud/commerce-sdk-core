@@ -1,0 +1,10 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.14.1
+ignore: {}
+# patches apply the minimum changes required to fix a vulnerability
+patch:
+  SNYK-JS-LODASH-567746:
+    - '@commerce-apps/raml-toolkit > lodash':
+        patched: '2020-07-08T16:35:15.679Z'
+    - lodash:
+        patched: '2020-07-08T16:35:15.679Z'

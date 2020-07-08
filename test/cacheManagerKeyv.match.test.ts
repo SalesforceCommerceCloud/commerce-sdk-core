@@ -68,9 +68,9 @@ describe("match tests", () => {
       .onSecondCall()
       .returns(JSON.stringify({ key: "value" }));
     return expect(
-      (
-        await cacheManager.match(new fetch.Request("https://example.com"))
-      ).json()
+      (await cacheManager.match(
+        new fetch.Request("https://example.com")
+      )).json()
     ).to.eventually.deep.equal({ key: "value" });
   });
 
@@ -81,11 +81,9 @@ describe("match tests", () => {
       .onSecondCall()
       .returns(JSON.stringify({ key: "value" }));
     return expect(
-      (
-        await cacheManager.match(
-          new fetch.Request("https://example.com?a=1&b=2")
-        )
-      ).json()
+      (await cacheManager.match(
+        new fetch.Request("https://example.com?a=1&b=2")
+      )).json()
     ).to.eventually.deep.equal({ key: "value" });
   });
 
@@ -96,11 +94,9 @@ describe("match tests", () => {
       .onSecondCall()
       .returns(JSON.stringify({ key: "value" }));
     return expect(
-      (
-        await cacheManager.match(
-          new fetch.Request("https://example.com?b=2&a=1")
-        )
-      ).json()
+      (await cacheManager.match(
+        new fetch.Request("https://example.com?b=2&a=1")
+      )).json()
     ).to.eventually.deep.equal({ key: "value" });
   });
 
@@ -111,11 +107,9 @@ describe("match tests", () => {
       .onSecondCall()
       .returns(JSON.stringify({ key: "value" }));
     return expect(
-      (
-        await cacheManager.match(
-          new fetch.Request("https://example.com?a=1&b=2")
-        )
-      ).json()
+      (await cacheManager.match(
+        new fetch.Request("https://example.com?a=1&b=2")
+      )).json()
     ).to.eventually.deep.equal({ key: "value" });
   });
 

@@ -15,10 +15,6 @@ import { CommonParameters } from "./commonParameters";
 import { ICacheManager } from "./cacheManager";
 import { CacheManagerKeyv } from "./cacheManagerKeyv";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const pkg = require("../../package.json");
-
-// Version is from @commerce-apps/core, but it will always match commerce-sdk
-export const USER_AGENT = `commerce-sdk@${pkg.version}`;
 
 // dotenv config loads environmental variables.
 config();
@@ -48,8 +44,7 @@ const DEFAULT_CLIENT_CONFIG: ClientConfig = {
   }),
   headers: {
     "content-type": "application/json",
-    connection: "close",
-    "user-agent": USER_AGENT
+    connection: "close"
   },
   parameters: {
     // Ideally, when version is set as a parameter in the baseUri, it's gets
