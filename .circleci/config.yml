@@ -13,7 +13,7 @@ commands:
       - run: npm run build
   test:
     steps:
-      - run: npm run test:all
+      - run: npm run test:ci
       - store_test_results:
           path: reports
 
