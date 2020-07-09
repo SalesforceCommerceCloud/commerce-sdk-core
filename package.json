@@ -10,7 +10,7 @@
     "lint": "eslint . --ext .ts --fix",
     "pretest": "npm run lint && npm run depcheck",
     "build": "tsc",
-    "test:ci": "npm run pretest && snyk test && nyc mocha \"test/**/*.test.ts\" --reporter=xunit --reporter-options output=../../reports/core.xml",
+    "test:ci": "npm run pretest && nyc mocha \"test/**/*.test.ts\" --reporter=xunit --reporter-options output=../../reports/core.xml",
     "test": "nyc mocha \"test/**/*.test.ts\"",
     "clean": "rm -rf package-lock.json && rm -rf dist",
     "clean:node": "rm -rf node_modules",
