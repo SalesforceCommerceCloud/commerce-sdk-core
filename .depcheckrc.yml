@@ -1,11 +1,5 @@
-ignores: [
-  "@types/chai",
-  "chai",
-  "depcheck",
-  "eslint*",
-  "mocha",
-  "nyc",
-  "prettier",
-  "tslib",
-  "typescript",
-]
+ignores: 
+  - tslib
+  - eslint-config-xo-typescript
+  - eslint-config-xo
+

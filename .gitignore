@@ -64,22 +64,14 @@ pkg
 
 dist
 
+# IDE Configuration
 .idea
-
-# Release folders
-packages/*/dist
-packages/generator/renderedTemplates/
 .vscode
-updateApiTmpDir
 
-reports*
+# Test results
+reports
 
 .DS_Store
 
 # Local History for Visual Studio
 **/.history
-
-#Not committing this, not needed and causes issues with circleCI
-integrationTests/package-lock.json
-
-test-results.xml
