@@ -40,18 +40,18 @@ const DEFAULT_CLIENT_CONFIG: ClientConfig = {
   // Limits to 10000 unique entities to cache before
   // replacing least recently used (LRU) entities
   cacheManager: new CacheManagerKeyv({
-    keyvStore: new QuickLRU({ maxSize: 10000 })
+    keyvStore: new QuickLRU({ maxSize: 10000 }),
   }),
   headers: {
     "content-type": "application/json",
-    connection: "close"
+    connection: "close",
   },
   parameters: {
     // Ideally, when version is set as a parameter in the baseUri, it's gets
     // filled in from the version field in the RAML. Until that's implemented,
     // we'll default to v1.
-    version: "v1"
-  }
+    version: "v1",
+  },
 };
 
 /**
@@ -84,7 +84,7 @@ export class BaseClient {
 
       _.merge(this.clientConfig.headers, {
         "ms2-authorization": `bearer ${token}`,
-        "ms2-origin": "Exchange"
+        "ms2-origin": "Exchange",
       });
     } catch (err) {
       throw new Error("Error while initializing mock client\n".concat(err));

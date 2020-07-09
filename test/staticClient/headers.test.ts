@@ -31,13 +31,13 @@ describe("Base Client headers", () => {
 
     const TWO_HEADER = {
       "Accept-Language": "en-US",
-      "Max-Forwards": "10"
+      "Max-Forwards": "10",
     };
 
     it("makes correct get call with headers", async () => {
       const client = new BaseClient({
         baseUri: "https://headers.test",
-        headers: LANGUAGE_HEADER
+        headers: LANGUAGE_HEADER,
       });
       nock("https://headers.test", { reqheaders: LANGUAGE_HEADER })
         .get("/client/get/headers")
@@ -50,7 +50,7 @@ describe("Base Client headers", () => {
     it("makes correct call with two headers", async () => {
       const client = new BaseClient({
         baseUri: "https://headers.test",
-        headers: TWO_HEADER
+        headers: TWO_HEADER,
       });
       nock("https://headers.test", { reqheaders: TWO_HEADER })
         .get("/client/get/two/headers")
@@ -63,7 +63,7 @@ describe("Base Client headers", () => {
     it("makes correct call for post with two headers", async () => {
       const client = new BaseClient({
         baseUri: "https://headers.test",
-        headers: TWO_HEADER
+        headers: TWO_HEADER,
       });
       nock("https://headers.test", { reqheaders: TWO_HEADER })
         .post("/client/post/two/headers")
@@ -72,14 +72,14 @@ describe("Base Client headers", () => {
       await _post({
         client: client,
         path: "/client/post/two/headers",
-        body: {}
+        body: {},
       });
       expect(nock.isDone()).to.be.true;
     });
 
     it("makes call with connection header set to close by default", async () => {
       const client = new BaseClient({
-        baseUri: "https://headers.test"
+        baseUri: "https://headers.test",
       });
 
       nock("https://headers.test", { reqheaders: CONNECTION_CLOSE })
@@ -93,7 +93,7 @@ describe("Base Client headers", () => {
     it("makes call with the connection header set in the client", async () => {
       const client = new BaseClient({
         baseUri: "https://headers.test",
-        headers: CONNECTION_KEEP_ALIVE
+        headers: CONNECTION_KEEP_ALIVE,
       });
 
       nock("https://headers.test", { reqheaders: CONNECTION_KEEP_ALIVE })
@@ -107,7 +107,7 @@ describe("Base Client headers", () => {
     it("makes call with the connection header set in the client", async () => {
       const client = new BaseClient({
         baseUri: "https://headers.test",
-        headers: CONNECTION_KEEP_ALIVE
+        headers: CONNECTION_KEEP_ALIVE,
       });
 
       nock("https://headers.test", { reqheaders: CONNECTION_KEEP_ALIVE })
@@ -125,16 +125,16 @@ describe("Base Client headers", () => {
     const LANGUAGE_HEADER = { "Accept-Language": "en-US" };
     const TWO_HEADER = {
       "Accept-Language": "fr-CH",
-      "Max-Forwards": "10"
+      "Max-Forwards": "10",
     };
     const MERGE_HEADER = {
       "Accept-Language": "en-US",
-      "Max-Forwards": "10"
+      "Max-Forwards": "10",
     };
 
     it("makes correct get call with endpoint headers", async () => {
       const client = new BaseClient({
-        baseUri: "https://headers.test"
+        baseUri: "https://headers.test",
       });
       nock("https://headers.test", { reqheaders: LANGUAGE_HEADER })
         .get("/get/with/language")
@@ -143,14 +143,14 @@ describe("Base Client headers", () => {
       await _get({
         client: client,
         path: "/get/with/language",
-        headers: LANGUAGE_HEADER
+        headers: LANGUAGE_HEADER,
       });
       expect(nock.isDone()).to.be.true;
     });
 
     it("makes correct call with two endpoint headers", async () => {
       const client = new BaseClient({
-        baseUri: "https://headers.test"
+        baseUri: "https://headers.test",
       });
       nock("https://headers.test", { reqheaders: TWO_HEADER })
         .get("/get/two/headers")
@@ -159,14 +159,14 @@ describe("Base Client headers", () => {
       await _get({
         client: client,
         path: "/get/two/headers",
-        headers: TWO_HEADER
+        headers: TWO_HEADER,
       });
       expect(nock.isDone()).to.be.true;
     });
 
     it("makes correct call for post with two endpoint headers", async () => {
       const client = new BaseClient({
-        baseUri: "https://headers.test"
+        baseUri: "https://headers.test",
       });
       nock("https://headers.test", { reqheaders: TWO_HEADER })
         .post("/post/two/headers")
@@ -176,7 +176,7 @@ describe("Base Client headers", () => {
         client: client,
         path: "/post/two/headers",
         headers: TWO_HEADER,
-        body: {}
+        body: {},
       });
       expect(nock.isDone()).to.be.true;
     });
@@ -184,7 +184,7 @@ describe("Base Client headers", () => {
     it("makes correct call for post with client and endpoint headers", async () => {
       const client = new BaseClient({
         baseUri: "https://headers.test",
-        headers: TWO_HEADER
+        headers: TWO_HEADER,
       });
       nock("https://headers.test", { reqheaders: MERGE_HEADER })
         .post("/post/with/header")
@@ -194,7 +194,7 @@ describe("Base Client headers", () => {
         client: client,
         path: "/post/with/header",
         headers: LANGUAGE_HEADER,
-        body: {}
+        body: {},
       });
       expect(nock.isDone()).to.be.true;
     });
@@ -202,7 +202,7 @@ describe("Base Client headers", () => {
     it("Overriding a header works with different casing", async () => {
       const client = new BaseClient({
         baseUri: "https://override.test",
-        headers: { authorization: "Testing" }
+        headers: { authorization: "Testing" },
       });
 
       nock("https://override.test")
@@ -213,14 +213,14 @@ describe("Base Client headers", () => {
       await _get({
         client: client,
         path: "/auth/changed/casing",
-        headers: { Authorization: "Changed" }
+        headers: { Authorization: "Changed" },
       });
       expect(nock.isDone()).to.be.true;
     });
 
     it("makes call with connection header passed to the get function ", async () => {
       const client = new BaseClient({
-        baseUri: "https://headers.test"
+        baseUri: "https://headers.test",
       });
 
       nock("https://headers.test", { reqheaders: CONNECTION_KEEP_ALIVE })
@@ -230,7 +230,7 @@ describe("Base Client headers", () => {
       await _get({
         client: client,
         path: "/connection/header",
-        headers: CONNECTION_KEEP_ALIVE
+        headers: CONNECTION_KEEP_ALIVE,
       });
       expect(nock.isDone()).to.be.true;
     });
@@ -238,7 +238,7 @@ describe("Base Client headers", () => {
     it("Merge headers together", async () => {
       const client = new BaseClient({
         baseUri: "https://override.test",
-        headers: { "X-Custom-Header": "Custom" }
+        headers: { "X-Custom-Header": "Custom" },
       });
 
       nock("https://override.test")
@@ -250,7 +250,7 @@ describe("Base Client headers", () => {
       await _get({
         client: client,
         path: "/merge/headers",
-        headers: { Authorization: "Changed" }
+        headers: { Authorization: "Changed" },
       });
       expect(nock.isDone()).to.be.true;
     });

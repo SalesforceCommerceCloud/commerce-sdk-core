@@ -31,7 +31,7 @@ describe("Test ShopperToken", () => {
   const customerInfo = {
     authType: "guest",
     customerId: "abZwdk8kyKbrPEVkbesCW0lW5M",
-    preferredLocale: "en_US"
+    preferredLocale: "en_US",
   };
 
   it("ShopperToken happy getAuthToken", () => {

@@ -59,7 +59,7 @@ export class Resource {
     );
 
     const queryString = qs.stringify(this.queryParameters, {
-      arrayFormat: "repeat"
+      arrayFormat: "repeat",
     });
 
     return `${renderedBaseUri}${renderedPath}${

@@ -16,7 +16,7 @@ import {
   sdkLogger,
   ShopperToken,
   StaticClient,
-  stripBearer
+  stripBearer,
 } from "../src";
 
 import chai from "chai";

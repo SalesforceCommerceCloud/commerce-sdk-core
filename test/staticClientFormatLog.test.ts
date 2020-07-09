@@ -23,10 +23,10 @@ after(() => {
 });
 
 describe("Test info log messages of fetch data", () => {
-  let spy;
+  let stub;
   before(() => {
     sdkLogger.setLevel(sdkLogger.levels.INFO);
-    spy = sinon.spy(sdkLogger, "info");
+    stub = sinon.stub(sdkLogger, "info");
   });
   after(() => {
     sinon.reset();
@@ -36,7 +36,7 @@ describe("Test info log messages of fetch data", () => {
     const options = { method: "GET" };
     const output = "Request: GET https://example.com/my/endpoint";
     logFetch(resource, options);
-    sinon.assert.calledWith(spy, output);
+    sinon.assert.calledWith(stub, output);
   });
 
   it("formats get with query params correctly", () => {
@@ -44,7 +44,7 @@ describe("Test info log messages of fetch data", () => {
     const options = { method: "GET" };
     const output = "Request: GET https://example.com/my/endpoint?myparam=value";
     logFetch(resource, options);
-    sinon.assert.calledWith(spy, output);
+    sinon.assert.calledWith(stub, output);
   });
 
   it("formats basic POST correctly", () => {
@@ -52,7 +52,7 @@ describe("Test info log messages of fetch data", () => {
     const options = { method: "POST" };
     const output = "Request: POST https://example.com/my/endpoint";
     logFetch(resource, options);
-    sinon.assert.calledWith(spy, output);
+    sinon.assert.calledWith(stub, output);
   });
 });
 
@@ -64,10 +64,11 @@ function getDebugMsgForFetch(resource, options): string {
   )}\nCurl: ${fetchToCurl(resource, options)}`;
 }
 describe("Test debug log messages of fetch data", () => {
-  let spy;
+  let stub;
   before(() => {
     sdkLogger.setLevel(sdkLogger.levels.DEBUG);
-    spy = sinon.spy(sdkLogger, "debug");
+    sinon.stub(sdkLogger, "info");
+    stub = sinon.stub(sdkLogger, "debug");
   });
   after(() => {
     sinon.reset();
@@ -76,32 +77,32 @@ describe("Test debug log messages of fetch data", () => {
     const resource = "https://example.com/my/endpoint";
     const options = { method: "GET" };
     logFetch(resource, options);
-    sinon.assert.calledWith(spy, getDebugMsgForFetch(resource, options));
+    sinon.assert.calledWith(stub, getDebugMsgForFetch(resource, options));
   });
 
   it("formats get with query params correctly", () => {
     const resource = "https://example.com/my/endpoint?myparam=value";
     const options = { method: "GET" };
     logFetch(resource, options);
-    sinon.assert.calledWith(spy, getDebugMsgForFetch(resource, options));
+    sinon.assert.calledWith(stub, getDebugMsgForFetch(resource, options));
   });
 
   it("formats basic POST correctly", () => {
     const resource = "https://example.com/my/endpoint";
     const options = {
       method: "POST",
-      body: JSON.stringify({ key1: "value1" })
+      body: JSON.stringify({ key1: "value1" }),
     };
     logFetch(resource, options);
-    sinon.assert.calledWith(spy, getDebugMsgForFetch(resource, options));
+    sinon.assert.calledWith(stub, getDebugMsgForFetch(resource, options));
   });
 });
 
 describe("Test info log messages of response data", () => {
-  let spy;
+  let stub;
   before(() => {
     sdkLogger.setLevel(sdkLogger.levels.INFO);
-    spy = sinon.spy(sdkLogger, "info");
+    stub = sinon.stub(sdkLogger, "info");
   });
   after(() => {
     sinon.reset();
@@ -113,7 +114,7 @@ describe("Test info log messages of response data", () => {
     );
     const output = "Response: successful 200 Everything is ok";
     logResponse(response);
-    sinon.assert.calledWith(spy, output);
+    sinon.assert.calledWith(stub, output);
   });
 
   it("formats created response correctly", () => {
@@ -123,7 +124,7 @@ describe("Test info log messages of response data", () => {
     );
     const output = "Response: successful 201 Everything is created";
     logResponse(response);
-    sinon.assert.calledWith(spy, output);
+    sinon.assert.calledWith(stub, output);
   });
 
   it("formats not modified response correctly", () => {
@@ -133,7 +134,7 @@ describe("Test info log messages of response data", () => {
     );
     const output = "Response: successful 304 Everything is the same";
     logResponse(response);
-    sinon.assert.calledWith(spy, output);
+    sinon.assert.calledWith(stub, output);
   });
 
   it("formats 404 response correctly", () => {
@@ -143,15 +144,16 @@ describe("Test info log messages of response data", () => {
     );
     const output = "Response: unsuccessful 404 Everything is gone";
     logResponse(response);
-    sinon.assert.calledWith(spy, output);
+    sinon.assert.calledWith(stub, output);
   });
 });
 
 describe("Test debug log messages of response data", () => {
-  let spy;
+  let stub;
   before(() => {
     sdkLogger.setLevel(sdkLogger.levels.DEBUG);
-    spy = sinon.spy(sdkLogger, "debug");
+    sinon.stub(sdkLogger, "info");
+    stub = sinon.stub(sdkLogger, "debug");
   });
   after(() => {
     sinon.reset();
@@ -170,6 +172,6 @@ describe("Test debug log messages of response data", () => {
       2
     )}`;
     logResponse(response);
-    sinon.assert.calledWith(spy, output);
+    sinon.assert.calledWith(stub, output);
   });
 });

@@ -27,7 +27,7 @@ describe("match tests", () => {
     cacheManager = new CacheManagerKeyv();
     cacheManager.keyv = sinon.stub({
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      get: key => undefined
+      get: (key) => undefined,
     });
   });
 
@@ -68,9 +68,9 @@ describe("match tests", () => {
       .onSecondCall()
       .returns(JSON.stringify({ key: "value" }));
     return expect(
-      (await cacheManager.match(
-        new fetch.Request("https://example.com")
-      )).json()
+      (
+        await cacheManager.match(new fetch.Request("https://example.com"))
+      ).json()
     ).to.eventually.deep.equal({ key: "value" });
   });
 
@@ -81,9 +81,11 @@ describe("match tests", () => {
       .onSecondCall()
       .returns(JSON.stringify({ key: "value" }));
     return expect(
-      (await cacheManager.match(
-        new fetch.Request("https://example.com?a=1&b=2")
-      )).json()
+      (
+        await cacheManager.match(
+          new fetch.Request("https://example.com?a=1&b=2")
+        )
+      ).json()
     ).to.eventually.deep.equal({ key: "value" });
   });
 
@@ -94,9 +96,11 @@ describe("match tests", () => {
       .onSecondCall()
       .returns(JSON.stringify({ key: "value" }));
     return expect(
-      (await cacheManager.match(
-        new fetch.Request("https://example.com?b=2&a=1")
-      )).json()
+      (
+        await cacheManager.match(
+          new fetch.Request("https://example.com?b=2&a=1")
+        )
+      ).json()
     ).to.eventually.deep.equal({ key: "value" });
   });
 
@@ -107,9 +111,11 @@ describe("match tests", () => {
       .onSecondCall()
       .returns(JSON.stringify({ key: "value" }));
     return expect(
-      (await cacheManager.match(
-        new fetch.Request("https://example.com?a=1&b=2")
-      )).json()
+      (
+        await cacheManager.match(
+          new fetch.Request("https://example.com?a=1&b=2")
+        )
+      ).json()
     ).to.eventually.deep.equal({ key: "value" });
   });
 
@@ -123,7 +129,7 @@ describe("match tests", () => {
     const req = new fetch.Request("https://example.com", { method: "head" });
 
     return expect(cacheManager.match(req)).to.eventually.include({
-      body: null
+      body: null,
     });
   });
 
@@ -132,9 +138,9 @@ describe("match tests", () => {
       metadata: {
         url: "https://example.com",
         resHeaders: {
-          vary: "*"
-        }
-      }
+          vary: "*",
+        },
+      },
     });
 
     return expect(cacheManager.match(new fetch.Request("https://example.com")))
@@ -147,17 +153,17 @@ describe("match tests", () => {
         url: "https://example.com",
         resHeaders: {
           vary: "accept-encoding",
-          "accept-encoding": "gzip"
-        }
-      }
+          "accept-encoding": "gzip",
+        },
+      },
     });
 
     return expect(
       cacheManager.match(
         new fetch.Request("https://example.com", {
           headers: {
-            "accept-encoding": "compress"
-          }
+            "accept-encoding": "compress",
+          },
         })
       )
     ).to.eventually.be.undefined;
@@ -170,18 +176,18 @@ describe("match tests", () => {
         metadata: {
           url: "https://example.com",
           reqHeaders: {
-            "accept-encoding": "gzip"
+            "accept-encoding": "gzip",
           },
           resHeaders: {
-            vary: "accept-encoding"
-          }
-        }
+            vary: "accept-encoding",
+          },
+        },
       })
       .onSecondCall()
       .returns(JSON.stringify({ key: "value" }));
 
     const req = new fetch.Request("https://example.com", {
-      headers: { "accept-encoding": "gzip" }
+      headers: { "accept-encoding": "gzip" },
     });
     return expect(
       (await cacheManager.match(req)).json()

@@ -23,7 +23,7 @@ describe("CacheManagerKeyv constructor", () => {
 
   it("accepts a database connection string to create the keyv store", () => {
     const cacheManager = new CacheManagerKeyv({
-      connection: "redis://localhost"
+      connection: "redis://localhost",
     });
     const { redis } = cacheManager.keyv.opts.store;
     redis.quit();
@@ -32,7 +32,7 @@ describe("CacheManagerKeyv constructor", () => {
 
   it("accepts keyv options to be passed through", () => {
     const cacheManager = new CacheManagerKeyv({
-      keyvOptions: { namespace: "test" }
+      keyvOptions: { namespace: "test" },
     });
     expect(cacheManager.keyv.opts.namespace).to.equal("test");
   });
