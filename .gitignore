@@ -81,3 +81,5 @@ reports*
 
 #Not committing this, not needed and causes issues with circleCI
 integrationTests/package-lock.json
+
+test-results.xml
