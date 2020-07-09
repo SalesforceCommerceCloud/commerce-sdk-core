@@ -15,10 +15,6 @@ import { CommonParameters } from "./commonParameters";
 import { ICacheManager } from "./cacheManager";
 import { CacheManagerKeyv } from "./cacheManagerKeyv";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const pkg = require("../../package.json");
-
-// Version is from @commerce-apps/core, but it will always match commerce-sdk
-export const USER_AGENT = `commerce-sdk@${pkg.version}`;
 
 // dotenv config loads environmental variables.
 config();
@@ -44,19 +40,18 @@ const DEFAULT_CLIENT_CONFIG: ClientConfig = {
   // Limits to 10000 unique entities to cache before
   // replacing least recently used (LRU) entities
   cacheManager: new CacheManagerKeyv({
-    keyvStore: new QuickLRU({ maxSize: 10000 })
+    keyvStore: new QuickLRU({ maxSize: 10000 }),
   }),
   headers: {
     "content-type": "application/json",
     connection: "close",
-    "user-agent": USER_AGENT
   },
   parameters: {
     // Ideally, when version is set as a parameter in the baseUri, it's gets
     // filled in from the version field in the RAML. Until that's implemented,
     // we'll default to v1.
-    version: "v1"
-  }
+    version: "v1",
+  },
 };
 
 /**
@@ -89,7 +84,7 @@ export class BaseClient {
 
       _.merge(this.clientConfig.headers, {
         "ms2-authorization": `bearer ${token}`,
-        "ms2-origin": "Exchange"
+        "ms2-origin": "Exchange",
       });
     } catch (err) {
       throw new Error("Error while initializing mock client\n".concat(err));

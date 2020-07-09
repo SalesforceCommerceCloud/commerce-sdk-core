@@ -27,9 +27,9 @@ describe("put tests", () => {
     cacheManager = new CacheManagerKeyv();
     cacheManager.keyv = sinon.stub({
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      get: key => undefined,
+      get: (key) => undefined,
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      set: (key, data) => undefined
+      set: (key, data) => undefined,
     });
   });
 
@@ -69,7 +69,7 @@ describe("put tests", () => {
     const url = "https://example.com?b=1&a=2";
     const body = { test: "body" };
     const response = new fetch.Response(Buffer.from(JSON.stringify(body)), {
-      url: url
+      url: url,
     });
     return expect(
       cacheManager.put(new fetch.Request(url), response)
@@ -95,7 +95,7 @@ describe("put tests", () => {
   it("returns response after writing for 304 response", async () => {
     const body = { test: "body" };
     const response = new fetch.Response(Buffer.from(JSON.stringify(body)), {
-      status: 304
+      status: 304,
     });
     cacheManager.keyv.get
       .onFirstCall()
@@ -113,7 +113,7 @@ describe("put tests", () => {
   it("returns response with correct cache headers for head request", async () => {
     const body = { test: "body" };
     const response = new fetch.Response(Buffer.from(JSON.stringify(body)), {
-      headers: { "cache-control": "max-age=600" }
+      headers: { "cache-control": "max-age=600" },
     });
     const url = "https://example.com/";
     const cacheKey = encodeURIComponent(`request-cache:${url}`);
@@ -122,10 +122,10 @@ describe("put tests", () => {
 
     cacheManager.keyv.get.onFirstCall().returns({
       metadata: {
-        url: "https://example.com/"
+        url: "https://example.com/",
       },
       integrity: hash,
-      time
+      time,
     });
     const actualResponse = await cacheManager.put(
       new fetch.Request(url, { method: "head" }),

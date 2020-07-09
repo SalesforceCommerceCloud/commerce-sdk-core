@@ -26,7 +26,7 @@ describe("Resource class tests", () => {
     assert.strictEqual(
       new Resource("{param}Uri/{p2}", {
         param: "base",
-        p2: "value"
+        p2: "value",
       }).toString(),
       "baseUri/value"
     );
@@ -35,7 +35,7 @@ describe("Resource class tests", () => {
   it("returns baseUri with param and path with param", () => {
     assert.strictEqual(
       new Resource("{param}Uri", { param: "base" }, "/path{param}", {
-        param: 1
+        param: 1,
       }).toString(),
       "baseUri/path1"
     );
@@ -59,7 +59,7 @@ describe("Resource class tests", () => {
   it("returns resource with substitution", () => {
     assert.strictEqual(
       new Resource("baseUri", {}, "/path/{param}", {
-        param: "value"
+        param: "value",
       }).toString(),
       "baseUri/path/value"
     );
@@ -69,7 +69,7 @@ describe("Resource class tests", () => {
     assert.strictEqual(
       new Resource("baseUri", {}, "/path/{param}/and/{another-one}", {
         param: "value",
-        "another-one": "value2"
+        "another-one": "value2",
       }).toString(),
       "baseUri/path/value/and/value2"
     );

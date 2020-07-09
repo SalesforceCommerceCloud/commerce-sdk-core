@@ -25,7 +25,7 @@ import {
   _patch,
   _post,
   _put,
-  Response
+  Response,
 } from "../../src/base/staticClient";
 
 describe("rawResponse tests", () => {
@@ -45,8 +45,8 @@ describe("rawResponse tests", () => {
     return _get({
       client: client,
       path: "/over/the/rainbow",
-      rawResponse: true
-    }).then(res => {
+      rawResponse: true,
+    }).then((res) => {
       expect(res).to.be.a("Response");
       expect(nock.isDone()).to.be.true;
     });
@@ -61,8 +61,8 @@ describe("rawResponse tests", () => {
     return _get({
       client: client,
       path: "/over/the/rainbow",
-      rawResponse: false
-    }).then(res => {
+      rawResponse: false,
+    }).then((res) => {
       expect(res).to.not.be.a("Response");
       expect(nock.isDone()).to.be.true;
     });
@@ -77,38 +77,34 @@ describe("rawResponse tests", () => {
     return _get({
       client: client,
       path: "/over/the/rainbow",
-      rawResponse: null
-    }).then(res => {
+      rawResponse: null,
+    }).then((res) => {
       expect(res).to.not.be.a("Response");
       expect(nock.isDone()).to.be.true;
     });
   });
 
   it("deletes resource and returns 200", () => {
-    nock("https://somewhere")
-      .delete("/over/the/rainbow")
-      .reply(200);
+    nock("https://somewhere").delete("/over/the/rainbow").reply(200);
 
     return _delete({
       client: client,
       path: "/over/the/rainbow",
-      rawResponse: true
-    }).then(res => {
+      rawResponse: true,
+    }).then((res) => {
       expect(res).to.be.a("Response");
       expect(nock.isDone()).to.be.true;
     });
   });
 
   it("is not ok when attempting to delete nonexistent resource", () => {
-    nock("https://somewhere")
-      .delete("/over/the/rainbow")
-      .reply(404);
+    nock("https://somewhere").delete("/over/the/rainbow").reply(404);
 
     return _delete({
       client: client,
       path: "/over/the/rainbow",
-      rawResponse: true
-    }).then(res => {
+      rawResponse: true,
+    }).then((res) => {
       expect(res).to.be.a("Response");
       expect((res as Response).status).to.eql(404);
       expect(nock.isDone()).to.be.true;
@@ -116,32 +112,28 @@ describe("rawResponse tests", () => {
   });
 
   it("post resource and returns 201", () => {
-    nock("https://somewhere")
-      .post("/over/the/rainbow")
-      .reply(201);
+    nock("https://somewhere").post("/over/the/rainbow").reply(201);
 
     return _post({
       client: client,
       path: "/over/the/rainbow",
       rawResponse: true,
-      body: {}
-    }).then(res => {
+      body: {},
+    }).then((res) => {
       expect(res).to.be.a("Response");
       expect(nock.isDone()).to.be.true;
     });
   });
 
   it("is not ok when attempting to post nonexistent collection", () => {
-    nock("https://somewhere")
-      .post("/over/the/rainbow")
-      .reply(404);
+    nock("https://somewhere").post("/over/the/rainbow").reply(404);
 
     return _post({
       client: client,
       path: "/over/the/rainbow",
       rawResponse: true,
-      body: { location: "oz" }
-    }).then(res => {
+      body: { location: "oz" },
+    }).then((res) => {
       expect(res).to.be.a("Response");
       expect((res as Response).status).to.eql(404);
       expect(nock.isDone()).to.be.true;
@@ -149,32 +141,28 @@ describe("rawResponse tests", () => {
   });
 
   it("put resource and returns 201", () => {
-    nock("https://somewhere")
-      .put("/over/the/rainbow")
-      .reply(201);
+    nock("https://somewhere").put("/over/the/rainbow").reply(201);
 
     return _put({
       client: client,
       path: "/over/the/rainbow",
       rawResponse: true,
-      body: {}
-    }).then(res => {
+      body: {},
+    }).then((res) => {
       expect(res).to.be.a("Response");
       expect(nock.isDone()).to.be.true;
     });
   });
 
   it("is not ok when attempting to put nonexistent resource", () => {
-    nock("https://somewhere")
-      .put("/over/the/rainbow")
-      .reply(404);
+    nock("https://somewhere").put("/over/the/rainbow").reply(404);
 
     return _put({
       client: client,
       path: "/over/the/rainbow",
       rawResponse: true,
-      body: {}
-    }).then(res => {
+      body: {},
+    }).then((res) => {
       expect(res).to.be.a("Response");
       expect((res as Response).status).to.eql(404);
       expect(nock.isDone()).to.be.true;
@@ -182,32 +170,28 @@ describe("rawResponse tests", () => {
   });
 
   it("patch resource and returns 200", () => {
-    nock("https://somewhere")
-      .patch("/over/the/rainbow")
-      .reply(200);
+    nock("https://somewhere").patch("/over/the/rainbow").reply(200);
 
     return _patch({
       client: client,
       path: "/over/the/rainbow",
       rawResponse: true,
-      body: {}
-    }).then(res => {
+      body: {},
+    }).then((res) => {
       expect(res).to.be.a("Response");
       expect(nock.isDone()).to.be.true;
     });
   });
 
   it("is not ok when attempting to patch nonexistent resource", () => {
-    nock("https://somewhere")
-      .patch("/over/the/rainbow")
-      .reply(404);
+    nock("https://somewhere").patch("/over/the/rainbow").reply(404);
 
     return _patch({
       client: client,
       path: "/over/the/rainbow",
       rawResponse: true,
-      body: {}
-    }).then(res => {
+      body: {},
+    }).then((res) => {
       expect(res).to.be.a("Response");
       expect((res as Response).status).to.eql(404);
       expect(nock.isDone()).to.be.true;

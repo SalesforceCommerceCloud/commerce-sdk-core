@@ -29,63 +29,49 @@ describe("retry settings test", () => {
         // This means 3 total calls are made
         retries: 2,
         maxTimeout: 200,
-        minTimeout: 100
-      }
+        minTimeout: 100,
+      },
     });
   });
   afterEach(nock.cleanAll);
 
   it("Tries 3 times", async () => {
-    const failure = nock("https://retry.test")
-      .get("/three")
-      .twice()
-      .reply(503);
+    const failure = nock("https://retry.test").get("/three").twice().reply(503);
 
-    const success = nock("https://retry.test")
-      .get("/three")
-      .reply(200, {});
+    const success = nock("https://retry.test").get("/three").reply(200, {});
 
     await _get({
       client: client,
-      path: "/three"
+      path: "/three",
     });
     expect(failure.isDone()).to.be.true;
     expect(success.isDone()).to.be.true;
   });
 
   it("Disable retry for a call", async () => {
-    const failure = nock("https://retry.test")
-      .get("/no-retry")
-      .reply(503);
+    const failure = nock("https://retry.test").get("/no-retry").reply(503);
 
-    const success = nock("https://retry.test")
-      .get("/no-retry")
-      .reply(200, {});
+    const success = nock("https://retry.test").get("/no-retry").reply(200, {});
 
     await _get({
       client: client,
       path: "/no-retry",
       retrySettings: {
-        retries: 0
-      }
+        retries: 0,
+      },
     }).should.eventually.be.rejectedWith(ResponseError);
     expect(failure.isDone()).to.be.true;
     expect(success.pendingMocks()).to.be.not.empty;
   });
 
   it("Doesn't try 4 times", async () => {
-    const failure = nock("https://retry.test")
-      .get("/four")
-      .thrice()
-      .reply(503);
+    const failure = nock("https://retry.test").get("/four").thrice().reply(503);
 
-    const success = nock("https://retry.test")
-      .get("/four")
-      .reply(200, {});
+    const success = nock("https://retry.test").get("/four").reply(200, {});
 
     await _get({
       client: client,
-      path: "/four"
+      path: "/four",
     }).should.eventually.be.rejectedWith(ResponseError);
     expect(failure.isDone()).to.be.true;
     expect(success.pendingMocks()).to.be.not.empty;

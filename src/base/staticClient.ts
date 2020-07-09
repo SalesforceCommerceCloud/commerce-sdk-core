@@ -127,14 +127,14 @@ async function runFetch(
   // Lets grab all the RequestInit defaults from the clientConfig
   const defaultsFromClientConfig: RequestInit = {
     cacheManager: options.client.clientConfig.cacheManager,
-    retry: options.client.clientConfig.retrySettings
+    retry: options.client.clientConfig.retrySettings,
   };
 
   // Let's create a request init object of all configurations in the current request
   const currentOptionsFromRequest: RequestInit = {
     method: method,
     retry: options.retrySettings,
-    body: JSON.stringify(options.body)
+    body: JSON.stringify(options.body),
   };
 
   // Merging like this will copy items into a new object, this removes the need to clone and then merge as we were before.

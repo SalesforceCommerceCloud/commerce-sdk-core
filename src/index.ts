@@ -9,7 +9,7 @@ export {
   BaseClient,
   ClientConfig,
   Response,
-  ResponseError
+  ResponseError,
 } from "./base/client";
 
 import { _get, _delete, _patch, _post, _put } from "./base/staticClient";
@@ -21,14 +21,14 @@ export const StaticClient = {
   delete: _delete,
   patch: _patch,
   post: _post,
-  put: _put
+  put: _put,
 };
 
 export { IAuthToken, ShopperToken, stripBearer } from "./base/authHelper";
 
 export {
   commonParameterPositions,
-  CommonParameters
+  CommonParameters,
 } from "./base/commonParameters";
 
 export { CacheManagerRedis } from "./base/cacheManagerRedis";

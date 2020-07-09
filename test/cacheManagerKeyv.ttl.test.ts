@@ -25,9 +25,9 @@ describe("TTL tests", () => {
     cacheManager = new CacheManagerKeyv();
     cacheManager.keyv = sinon.stub({
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      get: key => undefined,
+      get: (key) => undefined,
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      set: (key, data, expires) => undefined
+      set: (key, data, expires) => undefined,
     });
   });
 

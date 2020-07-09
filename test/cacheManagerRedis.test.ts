@@ -44,15 +44,15 @@ describe("quit tests", () => {
   it("returns false when quit isn't OK", async () => {
     cacheManager.keyv = {
       opts: {
-        store: { redis: { quit: async (): Promise<string> => "other thing" } }
-      }
+        store: { redis: { quit: async (): Promise<string> => "other thing" } },
+      },
     };
     return expect(cacheManager.quit()).to.eventually.be.false;
   });
 
   it("returns true when called with working redis", async () => {
     cacheManager.keyv = {
-      opts: { store: { redis: { quit: async (): Promise<string> => "OK" } } }
+      opts: { store: { redis: { quit: async (): Promise<string> => "OK" } } },
     };
     return expect(cacheManager.quit()).to.eventually.be.true;
   });
@@ -61,14 +61,14 @@ describe("quit tests", () => {
 describe("Redis connections", () => {
   it("creates a Redis instance when correct config is passed", () => {
     const cacheManager = new CacheManagerRedis({
-      connection: "redis://localhost"
+      connection: "redis://localhost",
     });
     expect(cacheManager.keyv.opts.store.redis).to.be.an.instanceOf(Redis);
     return cacheManager.quit();
   });
   it("creates a Redis cluster when correct config is passed", () => {
     const cacheManager = new CacheManagerRedis({
-      clusterConfig: [{}]
+      clusterConfig: [{}],
     });
     expect(cacheManager.keyv.opts.store.redis).to.be.an.instanceOf(
       Redis.Cluster

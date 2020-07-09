@@ -27,7 +27,7 @@ describe("delete tests", () => {
     cacheManager = new CacheManagerKeyv();
     cacheManager.keyv = sinon.stub({
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      delete: key => undefined
+      delete: (key) => undefined,
     });
   });
 

@@ -1,0 +1,5 @@
+ignores: 
+  - tslib
+  - eslint-config-xo-typescript
+  - eslint-config-xo
+

@@ -21,7 +21,7 @@ export const customCacheHeaders = {
   localCache: "X-Local-Cache",
   localCacheKey: "X-Local-Cache-Key",
   localCacheHash: "X-Local-Cache-Hash",
-  localCacheTime: "X-Local-Cache-Time"
+  localCacheTime: "X-Local-Cache-Time",
 };
 
 const addCacheHeaders = (resHeaders, path, key, hash, time): void => {
@@ -101,7 +101,7 @@ const matchDetails = (req: fetch.Request, cached: fetch.Request): boolean => {
     if (vary.match(/\*/)) {
       return false;
     } else {
-      const fieldsMatch = vary.split(/\s*,\s*/).every(field => {
+      const fieldsMatch = vary.split(/\s*,\s*/).every((field) => {
         return cached.reqHeaders.get(field) === req.headers.get(field);
       });
       if (!fieldsMatch) {
@@ -173,7 +173,7 @@ export class CacheManagerKeyv<T> implements ICacheManager {
         reqHeaders: new fetch.Headers(redisInfo.metadata.reqHeaders),
         resHeaders: new fetch.Headers(redisInfo.metadata.resHeaders),
         cacheIntegrity: redisInfo.integrity,
-        integrity: opts && opts.integrity
+        integrity: opts && opts.integrity,
       })
     ) {
       return;
@@ -198,7 +198,7 @@ export class CacheManagerKeyv<T> implements ICacheManager {
       return new fetch.Response(null, {
         url: req.url,
         headers: resHeaders,
-        status: 200
+        status: 200,
       });
     }
 
@@ -210,7 +210,7 @@ export class CacheManagerKeyv<T> implements ICacheManager {
         url: req.url,
         headers: resHeaders,
         status: 200,
-        size: redisInfo.size
+        size: redisInfo.size,
       })
     );
   }
@@ -252,10 +252,10 @@ export class CacheManagerKeyv<T> implements ICacheManager {
       metadata: {
         url: req.url,
         reqHeaders: req.headers.raw(),
-        resHeaders: response.headers.raw()
+        resHeaders: response.headers.raw(),
       },
       size,
-      time: Date.now()
+      time: Date.now(),
     };
     const debugMsg = `Response added to cache - metadata key: ${metadataKey}, content key: ${contentKey}`;
     if (req.method === "HEAD" || response.status === 304) {
@@ -305,7 +305,7 @@ export class CacheManagerKeyv<T> implements ICacheManager {
     const contentKey = getContentKey(req);
     const deletedFlag = await Promise.all([
       this.keyv.delete(metadataKey),
-      this.keyv.delete(contentKey)
+      this.keyv.delete(contentKey),
     ]);
     sdkLogger.debug(
       `Response deleted from cache - metadata key: ${metadataKey}, content key: ${contentKey}`

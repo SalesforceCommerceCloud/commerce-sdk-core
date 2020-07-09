@@ -12,7 +12,6 @@ import sinon from "sinon";
 
 import chai from "chai";
 import chaiAsPromised from "chai-as-promised";
-
 const expect = chai.expect;
 
 before(() => {
