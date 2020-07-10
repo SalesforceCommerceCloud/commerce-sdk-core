@@ -65,7 +65,7 @@ jobs:
       - run:
           name: Create npmrc file to authenticate with npm registry.
           command: echo "//registry.npmjs.org/:_authToken=$NPM_AUTH_TOKEN" > ~/.npmrc
-      - run: npm run publish
+      - run: npm publish
 
 # WORKFLOWS
 workflows:
