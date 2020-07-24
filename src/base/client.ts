@@ -9,8 +9,6 @@ import QuickLRU from "quick-lru";
 import { config } from "dotenv";
 import { OperationOptions } from "retry";
 
-import { getBearer } from "@commerce-apps/raml-toolkit";
-
 import { CommonParameters } from "./commonParameters";
 import { ICacheManager } from "./cacheManager";
 import { CacheManagerKeyv } from "./cacheManagerKeyv";
@@ -65,30 +63,6 @@ export class BaseClient {
   constructor(config?: ClientConfig) {
     this.clientConfig = {};
     _.merge(this.clientConfig, DEFAULT_CLIENT_CONFIG, config);
-  }
-
-  /**
-   * Initializes a mock service for the client to interact with.
-   *
-   * @remarks
-   * It is used for testing purposes.
-   *
-   * @returns A promise of type void
-   */
-  async initializeMockService(): Promise<void> {
-    try {
-      const token = await getBearer(
-        process.env.ANYPOINT_USERNAME,
-        process.env.ANYPOINT_PASSWORD
-      );
-
-      _.merge(this.clientConfig.headers, {
-        "ms2-authorization": `bearer ${token}`,
-        "ms2-origin": "Exchange",
-      });
-    } catch (err) {
-      throw new Error("Error while initializing mock client\n".concat(err));
-    }
   }
 }
 
