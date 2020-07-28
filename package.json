@@ -6,18 +6,14 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "depcheck": "depcheck",
-
     "lint": "eslint . --ext .ts --fix",
     "lint:ci": "eslint . --ext .ts --quiet",
     "pretest": "npm run lint && npm run depcheck",
     "pretest:ci": "npm run lint:ci && npm run depcheck",
-    
     "clean": "rm -rf package-lock.json && rm -rf dist",
     "clean:node": "rm -rf node_modules",
     "clean:all": "npm run clean && npm run clean:node",
-
     "build": "tsc",
-
     "test": "npm run cover:all",
     "test:ci": "npm run pretest:ci && npm run cover:ci",
     "test:unit": "mocha \"test/**/*.test.ts\"",
@@ -25,7 +21,6 @@
     "test:integration": "mocha \"testIntegration/**/*.test.ts\"",
     "test:integration:redis": "npm run redis && npm run test:integration && npm run redis:shutdown",
     "test:integration:ci": "npm run test:integration -- --reporter=xunit --reporter-options output=./reports/integrationTests.xml",
-
     "cover:all": "npm run cover:unit && npm run cover:integration && npm run cover:report",
     "cover:unit": "nyc --silent npm run test:unit",
     "cover:integration": "nyc --silent --no-clean npm run test:integration:redis",
@@ -33,7 +28,6 @@
     "cover:ci": "npm run cover:unit:ci && npm run cover:integration:ci && npm run cover:report",
     "cover:unit:ci": "nyc --silent npm run test:unit:ci",
     "cover:integration:ci": "nyc --silent --no-clean npm run test:integration",
-
     "redis": "docker rm --force redis-commerce-sdk; docker run -dp 6379:6379 --name redis-commerce-sdk redis:5-alpine",
     "redis:shutdown": "docker rm --force redis-commerce-sdk",
     "redis:debug": "docker rm --force redis-commerce-sdk-debug; docker run -dp 6379:6379 --name redis-commerce-sdk-debug redis:5-alpine && docker exec -it redis-commerce-sdk-debug redis-cli monitor",
@@ -153,7 +147,7 @@
     "sinon": "^9.0.2",
     "source-map-support": "^0.5.16",
     "ts-node": "^8.10.2",
-    "typescript": "^3.9.6"
+    "typescript": "^3.9.7"
   },
   "author": "",
   "license": "BSD-3-Clause",
