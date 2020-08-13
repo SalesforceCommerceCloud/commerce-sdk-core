@@ -43,13 +43,6 @@ describe("base client config get Bearer token success tests", () => {
     new BaseClient({ baseUri: "https://somewhere" });
     expect(getBearerMock.calledOnce).to.be.false;
   });
-
-  it("useMock client config does not get bearer token", () => {
-    const client = new BaseClient({ baseUri: "https://somewhere" });
-    return client.initializeMockService().then(() => {
-      expect(getBearerMock.calledOnce).to.be.true;
-    });
-  });
 });
 
 describe("base client config get Bearer token failure tests", () => {
@@ -64,12 +57,5 @@ describe("base client config get Bearer token failure tests", () => {
 
   after(() => {
     sandbox.restore();
-  });
-
-  it("useMock and wrong password, throws some api error", () => {
-    const client = new BaseClient({ baseUri: "https://somewhere" });
-    return client
-      .initializeMockService()
-      .should.eventually.be.rejectedWith(Error);
   });
 });
