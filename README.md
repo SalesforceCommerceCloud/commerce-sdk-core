@@ -4,13 +4,13 @@ The Core package provides a variety of functions that make interacting with Sale
 
 * Authentication - An easy way to authenticate with the APIs that require Account Manager authentication.
 * HTTP operations - TypeScript functions for all the HTTP operations.
-* Caching - Ability to specify whether the results of HTTP requests should be cached or not.
+* Caching - Ability to specify whether or not the results of HTTP requests should be cached.
 
  [commerce-sdk](https://www.npmjs.com/package/commerce-sdk) uses core to communicate with Salesforce Commerce APIs.
 
 ## Setup
 
-Execute the following commands to install dependencies and build core.
+To install dependencies and build core, execute the following commands:
 
     # To setup
     npm install
@@ -21,11 +21,11 @@ Execute the following commands to install dependencies and build core.
 
 ## Testing
 
-To run tests, execute
+To run tests, execute:
 ```bash
 npm run test
 ```
-To print the detailed test results and errors on the console, execute
+To print the detailed test results and errors on the console, execute:
 ```bash
 npm run test:debug
 ```
