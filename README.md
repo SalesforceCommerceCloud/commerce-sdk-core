@@ -1,6 +1,6 @@
 # core
 
-The Core package provides a variety of functions that make interacting with Salesforce Commerce APIs easy. The following are some of the functions that the Core package can perform:
+The Core package provides a variety of functions that make interacting with Salesforce Commerce APIs easy. The following are some of the Core package functions:
 
 * Authentication - An easy way to authenticate with the APIs that require Account Manager authentication.
 * HTTP operations - TypeScript functions for all the HTTP operations.
@@ -10,7 +10,7 @@ The Core package provides a variety of functions that make interacting with Sale
 
 ## Setup
 
-To install dependencies and build core, execute the following commands:
+To install dependencies and build core:
 
     # To setup
     npm install
@@ -21,11 +21,11 @@ To install dependencies and build core, execute the following commands:
 
 ## Testing
 
-To run tests, execute:
+To run tests:
 ```bash
 npm run test
 ```
-To print the detailed test results and errors on the console, execute:
+To print the detailed test results and the errors on the console:
 ```bash
 npm run test:debug
 ```
