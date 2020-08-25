@@ -6,11 +6,13 @@
  */
 import {
   BaseClient,
+  CacheManagerKeyv,
   CacheManagerRedis,
   ClientConfig,
   COMMERCE_SDK_LOGGER_KEY,
   commonParameterPositions,
   getObjectFromResponse,
+  ICacheManager,
   Response,
   ResponseError,
   sdkLogger,
@@ -24,6 +26,8 @@ const expect = chai.expect;
 
 describe("test exports", () => {
   it("can import BaseClient", () => expect(BaseClient).to.exist);
+
+  it("can import CacheManagerKeyv", () => expect(CacheManagerKeyv).to.exist);
 
   it("can import CacheManagerRedis", () => expect(CacheManagerRedis).to.exist);
 
