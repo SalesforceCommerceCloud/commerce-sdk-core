@@ -24,99 +24,6 @@ export const customCacheHeaders = {
   localCacheTime: "X-Local-Cache-Time",
 };
 
-const addCacheHeaders = (resHeaders, path, key, hash, time): void => {
-  resHeaders.set(customCacheHeaders.localCache, encodeURIComponent(path));
-  resHeaders.set(customCacheHeaders.localCacheKey, encodeURIComponent(key));
-  resHeaders.set(customCacheHeaders.localCacheHash, encodeURIComponent(hash));
-  resHeaders.set(
-    customCacheHeaders.localCacheTime,
-    new Date(time).toUTCString()
-  );
-};
-
-/**
- * Determines the response to be cached or not.
- *
- * @param response The response to determine ability for caching
- *
- * @returns boolean to cache the response or not
- */
-const shouldCache = (response: fetch.Response): boolean => {
-  const responseControl = response.headers
-    .get("cache-control")
-    ?.toLowerCase()
-    .trim()
-    .split(/\s*,\s*/);
-
-  return !(
-    responseControl &&
-    (responseControl.includes("private") ||
-      responseControl.includes("no-store"))
-  );
-};
-
-/**
- * Parses the URL string and sorts query params.
- *
- * @param urlString The URL to be normalized
- *
- * @returns The normalized URL as a string
- */
-const normalizeUrl = (urlString: string): string => {
-  const parsed: url.URL = new url.URL(urlString);
-  parsed.searchParams.sort();
-  return parsed.toString();
-};
-
-/**
- * Generate the cache key for the request to be cached or retrieved.
- *
- * @param req The request to generate a cache key for
- *
- * @returns A string of the cache key
- */
-const makeCacheKey = (req: fetch.Request): string => normalizeUrl(req.url);
-
-const getMetadataKey = (req: fetch.Request): string =>
-  `request-cache-metadata:${makeCacheKey(req)}`;
-
-const getContentKey = (req: fetch.Request): string =>
-  `request-cache:${makeCacheKey(req)}`;
-
-/**
- * Check if a cached request is a valid match for a given request.
- *
- * @param req The request to find a cached response for
- * @param cached The cached response
- *
- * @returns true for a match, false for a miss
- */
-const matchDetails = (req: fetch.Request, cached: fetch.Request): boolean => {
-  const reqUrl = new url.URL(normalizeUrl(req.url));
-  const cacheUrl = new url.URL(normalizeUrl(cached.url));
-  const vary = cached.resHeaders.get("Vary");
-  // https://tools.ietf.org/html/rfc7234#section-4.1
-  if (vary) {
-    // A Vary header field-value of "*" always fails to match.
-    if (vary.match(/\*/)) {
-      return false;
-    } else {
-      const fieldsMatch = vary.split(/\s*,\s*/).every((field) => {
-        return cached.reqHeaders.get(field) === req.headers.get(field);
-      });
-      if (!fieldsMatch) {
-        return false;
-      }
-    }
-  }
-  if (cached.integrity) {
-    return ssri.parse(cached.integrity).match(cached.cacheIntegrity);
-  }
-  reqUrl.hash = null;
-  cacheUrl.hash = null;
-  return url.format(reqUrl) === url.format(cacheUrl);
-};
-
 /**
  * This is an implementation of the Cache standard for make-fetch-happen using
  * the Keyv storage interface. The primary target is Redis.
@@ -142,6 +49,99 @@ export class CacheManagerKeyv<T> implements ICacheManager {
     this.keyv.on("error", sdkLogger.error);
   }
 
+  addCacheHeaders = (resHeaders, path, key, hash, time): void => {
+    resHeaders.set(customCacheHeaders.localCache, encodeURIComponent(path));
+    resHeaders.set(customCacheHeaders.localCacheKey, encodeURIComponent(key));
+    resHeaders.set(customCacheHeaders.localCacheHash, encodeURIComponent(hash));
+    resHeaders.set(
+      customCacheHeaders.localCacheTime,
+      new Date(time).toUTCString()
+    );
+  };
+
+  /**
+   * Determines the response to be cached or not.
+   *
+   * @param response The response to determine ability for caching
+   *
+   * @returns boolean to cache the response or not
+   */
+  shouldCache = (response: fetch.Response): boolean => {
+    const responseControl = response.headers
+      .get("cache-control")
+      ?.toLowerCase()
+      .trim()
+      .split(/\s*,\s*/);
+
+    return !(
+      responseControl &&
+      (responseControl.includes("private") ||
+        responseControl.includes("no-store"))
+    );
+  };
+
+  /**
+   * Parses the URL string and sorts query params.
+   *
+   * @param urlString The URL to be normalized
+   *
+   * @returns The normalized URL as a string
+   */
+  normalizeUrl = (urlString: string): string => {
+    const parsed: url.URL = new url.URL(urlString);
+    parsed.searchParams.sort();
+    return parsed.toString();
+  };
+
+  /**
+   * Generate the cache key for the request to be cached or retrieved.
+   *
+   * @param req The request to generate a cache key for
+   *
+   * @returns A string of the cache key
+   */
+  makeCacheKey = (req: fetch.Request): string => this.normalizeUrl(req.url);
+
+  getMetadataKey = (req: fetch.Request): string =>
+    `request-cache-metadata:${this.makeCacheKey(req)}`;
+
+  getContentKey = (req: fetch.Request): string =>
+    `request-cache:${this.makeCacheKey(req)}`;
+
+  /**
+   * Check if a cached request is a valid match for a given request.
+   *
+   * @param req The request to find a cached response for
+   * @param cached The cached response
+   *
+   * @returns true for a match, false for a miss
+   */
+  matchDetails = (req: fetch.Request, cached: fetch.Request): boolean => {
+    const reqUrl = new url.URL(this.normalizeUrl(req.url));
+    const cacheUrl = new url.URL(this.normalizeUrl(cached.url));
+    const vary = cached.resHeaders.get("Vary");
+    // https://tools.ietf.org/html/rfc7234#section-4.1
+    if (vary) {
+      // A Vary header field-value of "*" always fails to match.
+      if (vary.match(/\*/)) {
+        return false;
+      } else {
+        const fieldsMatch = vary.split(/\s*,\s*/).every((field) => {
+          return cached.reqHeaders.get(field) === req.headers.get(field);
+        });
+        if (!fieldsMatch) {
+          return false;
+        }
+      }
+    }
+    if (cached.integrity) {
+      return ssri.parse(cached.integrity).match(cached.cacheIntegrity);
+    }
+    reqUrl.hash = null;
+    cacheUrl.hash = null;
+    return url.format(reqUrl) === url.format(cacheUrl);
+  };
+
   /**
    * Returns a Promise that resolves to the response associated with the first
    * matching request in the Cache object.
@@ -157,8 +157,8 @@ export class CacheManagerKeyv<T> implements ICacheManager {
       throw new Error("Valid request object required to match");
     }
     this.stripUncacheableRequestHeaders(req);
-    const metadataKey: string = getMetadataKey(req);
-    const contentKey: string = getContentKey(req);
+    const metadataKey: string = this.getMetadataKey(req);
+    const contentKey: string = this.getContentKey(req);
 
     // No match if there's no metadata for this request
     const redisInfo = await this.keyv.get(metadataKey);
@@ -168,7 +168,7 @@ export class CacheManagerKeyv<T> implements ICacheManager {
 
     // No match if the metadata doesn't match
     if (
-      !matchDetails(req, {
+      !this.matchDetails(req, {
         url: redisInfo.metadata.url,
         reqHeaders: new fetch.Headers(redisInfo.metadata.reqHeaders),
         resHeaders: new fetch.Headers(redisInfo.metadata.resHeaders),
@@ -185,7 +185,7 @@ export class CacheManagerKeyv<T> implements ICacheManager {
     const resHeaders: fetch.Headers = new fetch.Headers(
       redisInfo.metadata.resHeaders
     );
-    addCacheHeaders(
+    this.addCacheHeaders(
       resHeaders,
       "",
       contentKey,
@@ -239,10 +239,10 @@ export class CacheManagerKeyv<T> implements ICacheManager {
     }
     this.stripUncacheableRequestHeaders(req);
     const size = response?.headers?.get("content-length");
-    const metadataKey = getMetadataKey(req);
-    const contentKey = getContentKey(req);
+    const metadataKey = this.getMetadataKey(req);
+    const contentKey = this.getContentKey(req);
 
-    if (!shouldCache(response)) {
+    if (!this.shouldCache(response)) {
       return response;
     }
 
@@ -263,7 +263,7 @@ export class CacheManagerKeyv<T> implements ICacheManager {
       const redisInfo = await this.keyv.get(metadataKey);
       // Providing these will bypass content write
       cacheOpts.integrity = redisInfo.integrity;
-      addCacheHeaders(
+      this.addCacheHeaders(
         response.headers,
         "",
         contentKey,
@@ -301,8 +301,8 @@ export class CacheManagerKeyv<T> implements ICacheManager {
       throw new Error("Valid request object required to delete");
     }
     this.stripUncacheableRequestHeaders(req);
-    const metadataKey = getMetadataKey(req);
-    const contentKey = getContentKey(req);
+    const metadataKey = this.getMetadataKey(req);
+    const contentKey = this.getContentKey(req);
     const deletedFlag = await Promise.all([
       this.keyv.delete(metadataKey),
       this.keyv.delete(contentKey),
