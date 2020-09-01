@@ -12,7 +12,6 @@ import {
   COMMERCE_SDK_LOGGER_KEY,
   commonParameterPositions,
   getObjectFromResponse,
-  ICacheManager,
   Response,
   ResponseError,
   sdkLogger,

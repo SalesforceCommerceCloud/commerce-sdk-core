@@ -6,10 +6,11 @@
  */
 "use strict";
 
+import url from "url";
+
 import fetch from "minipass-fetch";
 import Keyv from "keyv";
 import ssri from "ssri";
-import url from "url";
 
 import { ICacheManager } from "./cacheManager";
 import { sdkLogger } from "./sdkLogger";
@@ -49,7 +50,7 @@ export class CacheManagerKeyv<T> implements ICacheManager {
     this.keyv.on("error", sdkLogger.error);
   }
 
-  addCacheHeaders = (resHeaders, path, key, hash, time): void => {
+  addCacheHeaders(resHeaders, path, key, hash, time): void {
     resHeaders.set(customCacheHeaders.localCache, encodeURIComponent(path));
     resHeaders.set(customCacheHeaders.localCacheKey, encodeURIComponent(key));
     resHeaders.set(customCacheHeaders.localCacheHash, encodeURIComponent(hash));
@@ -57,7 +58,7 @@ export class CacheManagerKeyv<T> implements ICacheManager {
       customCacheHeaders.localCacheTime,
       new Date(time).toUTCString()
     );
-  };
+  }
 
   /**
    * Determines the response to be cached or not.
@@ -66,7 +67,7 @@ export class CacheManagerKeyv<T> implements ICacheManager {
    *
    * @returns boolean to cache the response or not
    */
-  shouldCache = (response: fetch.Response): boolean => {
+  shouldCache(response: fetch.Response): boolean {
     const responseControl = response.headers
       .get("cache-control")
       ?.toLowerCase()
@@ -78,7 +79,7 @@ export class CacheManagerKeyv<T> implements ICacheManager {
       (responseControl.includes("private") ||
         responseControl.includes("no-store"))
     );
-  };
+  }
 
   /**
    * Parses the URL string and sorts query params.
@@ -87,11 +88,11 @@ export class CacheManagerKeyv<T> implements ICacheManager {
    *
    * @returns The normalized URL as a string
    */
-  normalizeUrl = (urlString: string): string => {
-    const parsed: url.URL = new url.URL(urlString);
+  normalizeUrl(urlString: string): string {
+    const parsed: URL = new URL(urlString);
     parsed.searchParams.sort();
     return parsed.toString();
-  };
+  }
 
   /**
    * Generate the cache key for the request to be cached or retrieved.
@@ -100,13 +101,17 @@ export class CacheManagerKeyv<T> implements ICacheManager {
    *
    * @returns A string of the cache key
    */
-  makeCacheKey = (req: fetch.Request): string => this.normalizeUrl(req.url);
+  makeCacheKey(req: fetch.Request): string {
+    return this.normalizeUrl(req.url);
+  }
 
-  getMetadataKey = (req: fetch.Request): string =>
-    `request-cache-metadata:${this.makeCacheKey(req)}`;
+  getMetadataKey(req: fetch.Request): string {
+    return `request-cache-metadata:${this.makeCacheKey(req)}`;
+  }
 
-  getContentKey = (req: fetch.Request): string =>
-    `request-cache:${this.makeCacheKey(req)}`;
+  getContentKey(req: fetch.Request): string {
+    return `request-cache:${this.makeCacheKey(req)}`;
+  }
 
   /**
    * Check if a cached request is a valid match for a given request.
@@ -116,9 +121,9 @@ export class CacheManagerKeyv<T> implements ICacheManager {
    *
    * @returns true for a match, false for a miss
    */
-  matchDetails = (req: fetch.Request, cached: fetch.Request): boolean => {
-    const reqUrl = new url.URL(this.normalizeUrl(req.url));
-    const cacheUrl = new url.URL(this.normalizeUrl(cached.url));
+  matchDetails(req: fetch.Request, cached: fetch.Request): boolean {
+    const reqUrl = new URL(this.normalizeUrl(req.url));
+    const cacheUrl = new URL(this.normalizeUrl(cached.url));
     const vary = cached.resHeaders.get("Vary");
     // https://tools.ietf.org/html/rfc7234#section-4.1
     if (vary) {
@@ -140,7 +145,7 @@ export class CacheManagerKeyv<T> implements ICacheManager {
     reqUrl.hash = null;
     cacheUrl.hash = null;
     return url.format(reqUrl) === url.format(cacheUrl);
-  };
+  }
 
   /**
    * Returns a Promise that resolves to the response associated with the first
