@@ -31,5 +31,7 @@ export {
   CommonParameters,
 } from "./base/commonParameters";
 
+export { ICacheManager } from "./base/cacheManager";
+export { CacheManagerKeyv } from "./base/cacheManagerKeyv";
 export { CacheManagerRedis } from "./base/cacheManagerRedis";
 export { COMMERCE_SDK_LOGGER_KEY, sdkLogger } from "./base/sdkLogger";
