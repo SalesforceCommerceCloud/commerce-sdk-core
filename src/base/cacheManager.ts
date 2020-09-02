@@ -15,13 +15,13 @@ export interface ICacheManager {
   match(request: object, options: object): Promise<object>;
 
   // Returns a Promise that resolves to an array of all matching requests in the Cache object.
-  matchAll?(request: object, options: object): Promise<object>;
+  matchAll?(request: object, options: object): Promise<object[]>;
 
   // Takes a URL, retrieves it and adds the resulting response object to the given cache. This is functionally equivalent to calling fetch(), then using put() to add the results to the cache.
   add?(request: object): void;
 
   // Takes an array of URLs, retrieves them, and adds the resulting response objects to the given cache.
-  addAll?(requests: object): void;
+  addAll?(requests: object[]): void;
 
   // Takes both a request and its response and adds it to the given cache.
   put(request: object, response: object, options?: object): Promise<object>;
