@@ -9,3 +9,4 @@
 
 * Updated to TypeScript 3.9
 * Removed "beta" tag
+
