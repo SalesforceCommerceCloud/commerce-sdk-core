@@ -79,7 +79,7 @@ export default () => {
         // construct request object with url
         const request = {
           url: "https://somewhere/validate-no-store",
-          headers: { delete: (s) => s },
+          headers: { delete: <S>(s: S): S => s },
         };
         // options object with cacheManager
         const opts = {
@@ -127,7 +127,7 @@ export default () => {
           // construct request object with url
           const request = {
             url: "https://somewhere/validate-304-update",
-            headers: { delete: (s) => s },
+            headers: { delete: <S>(s: S): S => s },
           };
           // options object with cacheManager
           const opts = {
@@ -163,7 +163,7 @@ export default () => {
         // construct request object with url
         const request = {
           url: "https://somewhere/evict-modified",
-          headers: { delete: (s) => s },
+          headers: { delete: <S>(s: S): S => s },
         };
         // options object with cacheManager
         const opts = {
