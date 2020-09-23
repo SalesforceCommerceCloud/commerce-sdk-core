@@ -6,7 +6,7 @@
  */
 "use strict";
 
-import url from "url";
+import url, { URL } from "url";
 
 import fetch from "minipass-fetch";
 import Keyv from "keyv";
@@ -140,7 +140,7 @@ export class CacheManagerKeyv<T> implements ICacheManager {
       }
     }
     if (cached.integrity) {
-      return ssri.parse(cached.integrity).match(cached.cacheIntegrity);
+      return !!ssri.parse(cached.integrity).match(cached.cacheIntegrity);
     }
     reqUrl.hash = null;
     cacheUrl.hash = null;
