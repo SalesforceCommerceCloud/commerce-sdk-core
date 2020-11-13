@@ -1,0 +1,9 @@
+{
+  "file": "test/setup.ts",
+  "forbidOnly": true,
+  "require": [
+    "source-map-support/register",
+    "ts-node/register"
+  ],
+  "colors": true
+}

@@ -1,0 +1,39 @@
+{
+  "parser": "@typescript-eslint/parser",
+  "extends": [
+    "plugin:@typescript-eslint/recommended",
+    "prettier/@typescript-eslint",
+    "plugin:prettier/recommended"
+  ],
+  "plugins": [
+    "@typescript-eslint",
+    "header"
+  ],
+  "parserOptions": {
+    "ecmaVersion": 2018,
+    "sourceType": "module"
+  },
+  "rules": {
+    "@typescript-eslint/interface-name-prefix": [
+      "error",
+      {
+        "prefixWithI": "always"
+      }
+    ],
+    "header/header": [
+      2,
+      "block",
+      [
+        "",
+        {
+          "pattern": "^ \\* Copyright \\(c\\) \\d{4}, salesforce.com, inc\\.$",
+          "template": " * Copyright (c) 2020, salesforce.com, inc."
+        },
+        " * All rights reserved.",
+        " * SPDX-License-Identifier: BSD-3-Clause",
+        " * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause",
+        " "
+      ]
+    ]
+  }
+}

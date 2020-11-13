@@ -1,75 +1,51 @@
 {
   "name": "@commerce-apps/core",
   "version": "1.5.0",
-  "description": "Commerce SDK Generator, contains the templates to generate the SDK",
+  "description": "The Core package provides a variety of functions that make interacting with Salesforce Commerce APIs easy",
+  "homepage": "https://developer.commercecloud.com/s/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SalesforceCommerceCloud/commerce-sdk-core"
+  },
+  "license": "BSD-3-Clause",
+  "author": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "scripts": {
-    "depcheck": "depcheck",
-    "lint": "eslint . --ext .ts --fix",
-    "lint:ci": "eslint . --ext .ts --quiet",
-    "pretest": "npm run lint && npm run depcheck",
-    "pretest:ci": "npm run lint:ci && npm run depcheck",
-    "clean": "rm -rf package-lock.json && rm -rf dist",
-    "clean:node": "rm -rf node_modules",
-    "clean:all": "npm run clean && npm run clean:node",
-    "build": "tsc",
-    "test": "npm run cover:all",
-    "test:ci": "npm run pretest:ci && npm run cover:ci",
-    "test:unit": "mocha \"test/**/*.test.ts\"",
-    "test:unit:ci": "npm run test:unit -- --reporter=xunit --reporter-options output=./reports/unitTests.xml",
-    "test:integration": "mocha \"testIntegration/**/*.test.ts\"",
-    "test:integration:redis": "npm run redis && npm run test:integration && npm run redis:shutdown",
-    "test:integration:ci": "npm run test:integration -- --reporter=xunit --reporter-options output=./reports/integrationTests.xml",
-    "cover:all": "npm run cover:unit && npm run cover:integration && npm run cover:report",
-    "cover:unit": "nyc --silent npm run test:unit",
-    "cover:integration": "nyc --silent --no-clean npm run test:integration:redis",
-    "cover:report": "nyc report --reporter=lcov --reporter=text",
-    "cover:ci": "npm run cover:unit:ci && npm run cover:integration:ci && npm run cover:report",
-    "cover:unit:ci": "nyc --silent npm run test:unit:ci",
-    "cover:integration:ci": "nyc --silent --no-clean npm run test:integration",
-    "redis": "docker rm --force redis-commerce-sdk; docker run -dp 6379:6379 --name redis-commerce-sdk redis:5-alpine",
-    "redis:shutdown": "docker rm --force redis-commerce-sdk",
-    "redis:debug": "docker rm --force redis-commerce-sdk-debug; docker run -dp 6379:6379 --name redis-commerce-sdk-debug redis:5-alpine && docker exec -it redis-commerce-sdk-debug redis-cli monitor",
-    "redis:debug:shutdown": "docker rm --force redis-commerce-sdk-debug",
-    "snyk-protect": "snyk protect",
-    "prepare": "npm run snyk-protect"
-  },
   "files": [
     "dist",
     "README.md",
     "LICENSE.txt"
   ],
-  "publishConfig": {
-    "access": "public"
-  },
-  "nyc": {
-    "extends": "@istanbuljs/nyc-config-typescript",
-    "include": [
-      "src/**/*.ts"
-    ],
-    "reporter": [
-      "lcov",
-      "text"
-    ],
-    "extension": [
-      ".ts"
-    ],
-    "all": true,
-    "check-coverage": true,
-    "branches": 80,
-    "functions": 80,
-    "lines": 80,
-    "statements": -10,
-    "per-file": true
-  },
-  "mocha": {
-    "forbidOnly": true,
-    "require": [
-      "source-map-support/register",
-      "ts-node/register"
-    ],
-    "colors": true
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf package-lock.json && rm -rf dist",
+    "clean:all": "npm run clean && npm run clean:node",
+    "clean:node": "rm -rf node_modules",
+    "cover:all": "npm run cover:unit && npm run cover:integration && npm run cover:report",
+    "cover:ci": "npm run cover:unit:ci && npm run cover:integration:ci && npm run cover:report",
+    "cover:integration": "nyc --silent --no-clean npm run test:integration:redis",
+    "cover:integration:ci": "nyc --silent --no-clean npm run test:integration",
+    "cover:report": "nyc report --reporter=lcov --reporter=text",
+    "cover:unit": "nyc --silent npm run test:unit",
+    "cover:unit:ci": "nyc --silent npm run test:unit:ci",
+    "depcheck": "depcheck",
+    "lint": "sort-package-json && eslint . --ext .ts --fix",
+    "lint:ci": "npm run lint -- --quiet",
+    "prepare": "npm run snyk-protect",
+    "redis": "docker rm --force redis-commerce-sdk; docker run -dp 6379:6379 --name redis-commerce-sdk redis:5-alpine",
+    "redis:debug": "docker rm --force redis-commerce-sdk-debug; docker run -dp 6379:6379 --name redis-commerce-sdk-debug redis:5-alpine && docker exec -it redis-commerce-sdk-debug redis-cli monitor",
+    "redis:debug:shutdown": "docker rm --force redis-commerce-sdk-debug",
+    "redis:shutdown": "docker rm --force redis-commerce-sdk",
+    "snyk-protect": "snyk protect",
+    "pretest": "npm run lint && npm run depcheck",
+    "test": "npm run cover:all",
+    "pretest:ci": "npm run lint:ci && npm run depcheck",
+    "test:ci": "npm run pretest:ci && npm run cover:ci",
+    "test:integration": "mocha \"testIntegration/**/*.test.ts\"",
+    "test:integration:ci": "npm run test:integration -- --reporter=xunit --reporter-options output=./reports/integrationTests.xml",
+    "test:integration:redis": "npm run redis && npm run test:integration && npm run redis:shutdown",
+    "test:unit": "mocha \"test/**/*.test.ts\"",
+    "test:unit:ci": "npm run test:unit -- --reporter=xunit --reporter-options output=./reports/unitTests.xml"
   },
   "lint-staged": {
     "*.js": [
@@ -77,44 +53,22 @@
       "git add"
     ]
   },
-  "eslintConfig": {
-    "parser": "@typescript-eslint/parser",
-    "extends": [
-      "plugin:@typescript-eslint/recommended",
-      "prettier/@typescript-eslint",
-      "plugin:prettier/recommended"
-    ],
-    "plugins": [
-      "@typescript-eslint",
-      "header"
-    ],
-    "parserOptions": {
-      "ecmaVersion": 2018,
-      "sourceType": "module"
-    },
-    "rules": {
-      "@typescript-eslint/interface-name-prefix": [
-        "error",
-        {
-          "prefixWithI": "always"
-        }
-      ],
-      "header/header": [
-        2,
-        "block",
-        [
-          "",
-          {
-            "pattern": "^ \\* Copyright \\(c\\) \\d{4}, salesforce.com, inc\\.$",
-            "template": " * Copyright (c) 2020, salesforce.com, inc."
-          },
-          " * All rights reserved.",
-          " * SPDX-License-Identifier: BSD-3-Clause",
-          " * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause",
-          " "
-        ]
-      ]
-    }
+  "dependencies": {
+    "@keyv/redis": "^2.1.1",
+    "dotenv": "~8.2.0",
+    "fetch-to-curl": "^0.4.0",
+    "ioredis": "^4.16.2",
+    "jsonwebtoken": "^8.5.1",
+    "keyv": "^4.0.0",
+    "lodash": "^4.17.20",
+    "loglevel": "^1.6.8",
+    "make-fetch-happen": "^8.0.4",
+    "minipass-fetch": "^1.2.1",
+    "qs": "~6.9.1",
+    "quick-lru": "^5.1.1",
+    "retry": "^0.12.0",
+    "snyk": "^1.399.0",
+    "ssri": "^7.1.0"
   },
   "devDependencies": {
     "@commerce-apps/raml-toolkit": "^0.4.2",
@@ -142,34 +96,19 @@
     "eslint-plugin-header": "^3.0.0",
     "eslint-plugin-prettier": "^3.1.4",
     "lint-staged": "^10.1.3",
-    "mocha": "^7.0.1",
+    "mocha": "^8.2.1",
     "nock": "^11.7.0",
     "nyc": "^15.1.0",
     "prettier": "^2.0.5",
     "qs": "^6.9.0",
     "sinon": "^9.0.2",
+    "sort-package-json": "^1.46.1",
     "source-map-support": "^0.5.16",
     "ts-node": "^8.10.2"
   },
-  "author": "",
-  "license": "BSD-3-Clause",
-  "gitHead": "2a6031f5f57c4ba5df8bfb5c4ca42b2631befe58",
-  "dependencies": {
-    "@keyv/redis": "^2.1.1",
-    "dotenv": "~8.2.0",
-    "fetch-to-curl": "^0.4.0",
-    "ioredis": "^4.16.2",
-    "jsonwebtoken": "^8.5.1",
-    "keyv": "^4.0.0",
-    "lodash": "^4.17.20",
-    "loglevel": "^1.6.8",
-    "make-fetch-happen": "^8.0.4",
-    "minipass-fetch": "^1.2.1",
-    "qs": "~6.9.1",
-    "quick-lru": "^5.1.1",
-    "retry": "^0.12.0",
-    "snyk": "^1.399.0",
-    "ssri": "^7.1.0"
+  "publishConfig": {
+    "access": "public"
   },
+  "gitHead": "2a6031f5f57c4ba5df8bfb5c4ca42b2631befe58",
   "snyk": true
 }
