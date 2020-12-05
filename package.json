@@ -62,7 +62,7 @@
     "keyv": "^4.0.0",
     "lodash": "^4.17.20",
     "loglevel": "^1.6.8",
-    "make-fetch-happen": "^8.0.4",
+    "make-fetch-happen": "^8.0.10",
     "minipass-fetch": "^1.2.1",
     "qs": "~6.9.1",
     "quick-lru": "^5.1.1",
