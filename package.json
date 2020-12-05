@@ -59,7 +59,7 @@
     "fetch-to-curl": "^0.4.0",
     "ioredis": "^4.16.2",
     "jsonwebtoken": "^8.5.1",
-    "keyv": "^4.0.0",
+    "keyv": "^4.0.3",
     "lodash": "^4.17.20",
     "loglevel": "^1.6.8",
     "make-fetch-happen": "^8.0.4",
