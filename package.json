@@ -61,7 +61,7 @@
     "jsonwebtoken": "^8.5.1",
     "keyv": "^4.0.0",
     "lodash": "^4.17.20",
-    "loglevel": "^1.6.8",
+    "loglevel": "^1.7.0",
     "make-fetch-happen": "^8.0.4",
     "minipass-fetch": "^1.2.1",
     "qs": "~6.9.1",
