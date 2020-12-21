@@ -1,3 +1,6 @@
+### 1.5.1
+* Security updates
+
 ### 1.5.0
 
 * Removed raml-toolkit as a runtime dependency
