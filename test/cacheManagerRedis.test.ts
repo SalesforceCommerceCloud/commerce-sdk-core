@@ -8,7 +8,7 @@ import chai from "chai";
 import chaiAsPromised from "chai-as-promised";
 
 import sinon from "sinon";
-import Redis from "ioredis";
+import * as Redis from "ioredis";
 
 import { CacheManagerRedis } from "../src/base/cacheManagerRedis";
 
@@ -63,7 +63,9 @@ describe("Redis connections", () => {
     const cacheManager = new CacheManagerRedis({
       connection: "redis://localhost",
     });
-    expect(cacheManager.keyv.opts.store.redis).to.be.an.instanceOf(Redis);
+    expect(cacheManager.keyv.opts.store.redis).to.be.an.instanceOf(
+      Redis.constructor
+    );
     return cacheManager.quit();
   });
   it("creates a Redis cluster when correct config is passed", () => {

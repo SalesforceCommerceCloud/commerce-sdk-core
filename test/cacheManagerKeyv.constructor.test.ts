@@ -7,7 +7,7 @@
 "use strict";
 import { expect } from "chai";
 import { CacheManagerKeyv } from "../src/base/cacheManagerKeyv";
-import Redis from "ioredis";
+import * as Redis from "ioredis";
 
 describe("CacheManagerKeyv constructor", () => {
   it("uses the default keyv store when no options passed", () => {
@@ -27,7 +27,7 @@ describe("CacheManagerKeyv constructor", () => {
     });
     const { redis } = cacheManager.keyv.opts.store;
     redis.quit();
-    expect(redis).to.be.an.instanceOf(Redis);
+    expect(redis).to.be.an.instanceOf(Redis.constructor);
   });
 
   it("accepts keyv options to be passed through", () => {
