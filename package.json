@@ -68,7 +68,7 @@
     "quick-lru": "^5.1.1",
     "retry": "^0.12.0",
     "snyk": "^1.459.0",
-    "ssri": "^7.1.0"
+    "ssri": "^8.0.1"
   },
   "devDependencies": {
     "@commerce-apps/raml-toolkit": "^0.4.2",
