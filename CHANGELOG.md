@@ -1,3 +1,6 @@
+### 1.5.2
+* Security updates
+
 ### 1.5.1
 * Security updates
 
