@@ -1,24 +1,23 @@
 /*
- * Copyright (c) 2019, salesforce.com, inc.
+ * Copyright (c) 2021, salesforce.com, inc.
  * All rights reserved.
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-import { default as fetch, Response, RequestInit } from "make-fetch-happen";
-
+import type { Response } from "node-fetch";
+import fetch from "make-fetch-happen";
 import _ from "lodash";
 import fetchToCurl from "fetch-to-curl";
-
-import DefaultCache = require("make-fetch-happen/cache");
-export { DefaultCache, Response };
-
 import { Headers } from "minipass-fetch";
+import { OperationOptions } from "retry";
+import Redis from "ioredis";
 
 import { Resource } from "./resource";
 import { BaseClient } from "./client";
 import { sdkLogger } from "./sdkLogger";
-import { OperationOptions } from "retry";
-import Redis from "ioredis";
+
+export { DefaultCache } from "make-fetch-happen/cache";
+export { Response };
 
 /**
  * Extends the Error class with the the error being a combination of status code
@@ -66,7 +65,12 @@ export async function getObjectFromResponse(
  * @param resource The resource being requested
  * @param fetchOptions The options to the fetch call
  */
-export function logFetch(resource: string, fetchOptions: RequestInit): void {
+export function logFetch(
+  resource: string,
+  // TODO: Remove this workaround when @types/node-fetch bug is fixed
+  // https://github.com/DefinitelyTyped/DefinitelyTyped/pull/54674
+  fetchOptions: Omit<fetch.FetchOptions, "headers"> & { headers?: Headers }
+): void {
   sdkLogger.info(`Request: ${fetchOptions.method.toUpperCase()} ${resource}`);
   sdkLogger.debug(
     `Fetch Options: ${JSON.stringify(
@@ -125,20 +129,23 @@ async function runFetch(
   ).toString();
 
   // Lets grab all the RequestInit defaults from the clientConfig
-  const defaultsFromClientConfig: RequestInit = {
-    cacheManager: options.client.clientConfig.cacheManager,
+  const defaultsFromClientConfig: fetch.FetchOptions = {
+    // This type assertion is technically inaccurate, as some properties may
+    // be missing, but it hasn't caused issues yet, and it's temporary anyway,
+    // since the latest make-fetch-happen drops support for cacheManager.
+    cacheManager: options.client.clientConfig.cacheManager as Cache,
     retry: options.client.clientConfig.retrySettings,
   };
 
   // Let's create a request init object of all configurations in the current request
-  const currentOptionsFromRequest: RequestInit = {
+  const currentOptionsFromRequest: fetch.FetchOptions = {
     method: method,
     retry: options.retrySettings,
     body: JSON.stringify(options.body),
   };
 
   // Merging like this will copy items into a new object, this removes the need to clone and then merge as we were before.
-  let finalOptions = _.merge(
+  let finalOptions: fetch.FetchOptions = _.merge(
     {},
     defaultsFromClientConfig,
     currentOptionsFromRequest
@@ -152,7 +159,7 @@ async function runFetch(
     headers.set(header, value);
   }
 
-  finalOptions["headers"] = headers;
+  finalOptions.headers = headers;
 
   // This line merges the values and then strips anything that is undefined.
   //  (NOTE: Not sure we have to, as all tests pass regardless, but going to anyways)
