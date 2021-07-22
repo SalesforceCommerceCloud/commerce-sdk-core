@@ -111,8 +111,8 @@ async function runFetch(
   options: {
     client: BaseClient;
     path: string;
-    pathParameters?: object;
-    queryParameters?: object;
+    pathParameters?: { [key: string]: string };
+    queryParameters?: { [key: string]: string };
     headers?: { [key: string]: string };
     rawResponse?: boolean;
     retrySettings?: OperationOptions;
@@ -173,8 +173,8 @@ async function runFetch(
 export function _get(options: {
   client: BaseClient;
   path: string;
-  pathParameters?: object;
-  queryParameters?: object;
+  pathParameters?: { [key: string]: string };
+  queryParameters?: { [key: string]: string };
   headers?: { [key: string]: string };
   retrySettings?: OperationOptions;
   rawResponse?: boolean;
@@ -193,8 +193,8 @@ export function _get(options: {
 export function _delete(options: {
   client: BaseClient;
   path: string;
-  pathParameters?: object;
-  queryParameters?: object;
+  pathParameters?: { [key: string]: string };
+  queryParameters?: { [key: string]: string };
   headers?: { [key: string]: string };
   retrySettings?: OperationOptions;
   rawResponse?: boolean;
@@ -213,8 +213,8 @@ export function _delete(options: {
 export function _patch(options: {
   client: BaseClient;
   path: string;
-  pathParameters?: object;
-  queryParameters?: object;
+  pathParameters?: { [key: string]: string };
+  queryParameters?: { [key: string]: string };
   headers?: { [key: string]: string };
   retrySettings?: OperationOptions;
   rawResponse?: boolean;
@@ -235,8 +235,8 @@ export function _patch(options: {
 export function _post(options: {
   client: BaseClient;
   path: string;
-  pathParameters?: object;
-  queryParameters?: object;
+  pathParameters?: { [key: string]: string };
+  queryParameters?: { [key: string]: string };
   headers?: { [key: string]: string };
   retrySettings?: OperationOptions;
   rawResponse?: boolean;
@@ -257,8 +257,8 @@ export function _post(options: {
 export function _put(options: {
   client: BaseClient;
   path: string;
-  pathParameters?: object;
-  queryParameters?: object;
+  pathParameters?: { [key: string]: string };
+  queryParameters?: { [key: string]: string };
   headers?: { [key: string]: string };
   retrySettings?: OperationOptions;
   rawResponse?: boolean;
