@@ -128,49 +128,35 @@ async function runFetch(
     options.queryParameters
   ).toString();
 
-  // Lets grab all the RequestInit defaults from the clientConfig
-  const defaultsFromClientConfig: fetch.FetchOptions = {
-    // This type assertion is technically inaccurate, as some properties may
-    // be missing, but it hasn't caused issues yet, and it's temporary anyway,
-    // since the latest make-fetch-happen drops support for cacheManager.
-    cacheManager: options.client.clientConfig.cacheManager as Cache,
-    retry: options.client.clientConfig.retrySettings,
-  };
-
-  // Let's create a request init object of all configurations in the current request
-  const currentOptionsFromRequest: fetch.FetchOptions = {
-    method: method,
-    retry: options.retrySettings,
-    body: JSON.stringify(options.body),
-  };
-
-  // Merging like this will copy items into a new object, this removes the need to clone and then merge as we were before.
-  let finalOptions: fetch.FetchOptions = _.merge(
-    {},
-    defaultsFromClientConfig,
-    currentOptionsFromRequest
-  );
-
-  // Headers are treated separately to be able to move them into their own object.
-  const headers = new Headers(_.merge({}, options.client.clientConfig.headers));
-
-  // Overwrite client header defaults with headers in call
-  for (const [header, value] of Object.entries(options.headers || {})) {
+  // Multiple headers can be specified by using different cases. The `Headers`
+  // class handles this automatically.
+  const headers = new Headers(options.client.clientConfig.headers);
+  for (const [header, value] of new Headers(options.headers)) {
+    // Headers specified on the request will _replace_ those specified on the
+    // client, rather than be appended to them.
     headers.set(header, value);
   }
 
-  finalOptions.headers = headers;
+  const fetchOptions: fetch.FetchOptions = {
+    // This type assertion is technically inaccurate, as some properties may
+    // be missing. However, it hasn't caused issues yet, and it's just temporary
+    // because the latest make-fetch-happen drops support for cacheManager.
+    cacheManager: options.client.clientConfig.cacheManager as Cache,
+    method: method,
+    body: JSON.stringify(options.body),
+    // The package `http-cache-semantics` (used by `make-fetch-happen`) expects
+    // headers to be plain objects, not instances of Headers.
+    // TODO: _.fromPairs can be replaced with Object.fromEntries when support
+    // for node v10 is dropped.
+    headers: _.fromPairs([...headers]),
+    retry: {
+      ...options.client.clientConfig.retrySettings,
+      ...options.retrySettings,
+    },
+  };
 
-  // This line merges the values and then strips anything that is undefined.
-  //  (NOTE: Not sure we have to, as all tests pass regardless, but going to anyways)
-  finalOptions = _.pickBy(finalOptions, _.identity);
-  // Convert Headers object into a regular object. `http-cache-semantics`, a
-  // package used by `make-fetch-happen` to manipulate headers expects headers
-  // to be regular objects.
-  finalOptions.headers = _.fromPairs([...headers]);
-
-  logFetch(resource, finalOptions);
-  const response = await fetch(resource, finalOptions);
+  logFetch(resource, fetchOptions);
+  const response = await fetch(resource, fetchOptions);
   logResponse(response);
 
   return options.rawResponse ? response : getObjectFromResponse(response);
