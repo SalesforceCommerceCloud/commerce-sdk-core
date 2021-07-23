@@ -82,7 +82,7 @@
     "@types/make-fetch-happen": "^8.0.2",
     "@types/mocha": "^5.2.7",
     "@types/node": "^12.6.9",
-    "@types/node-fetch": "^2.5.11",
+    "@types/node-fetch": "^2.5.12",
     "@types/qs": "^6.9.5",
     "@types/retry": "^0.12.0",
     "@types/sinon": "^7.5.0",

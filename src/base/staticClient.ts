@@ -67,9 +67,7 @@ export async function getObjectFromResponse(
  */
 export function logFetch(
   resource: string,
-  // TODO: Remove this workaround when @types/node-fetch bug is fixed
-  // https://github.com/DefinitelyTyped/DefinitelyTyped/pull/54674
-  fetchOptions: Omit<fetch.FetchOptions, "headers"> & { headers?: Headers }
+  fetchOptions: fetch.FetchOptions
 ): void {
   sdkLogger.info(`Request: ${fetchOptions.method.toUpperCase()} ${resource}`);
   sdkLogger.debug(
