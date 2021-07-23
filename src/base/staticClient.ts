@@ -110,7 +110,7 @@ async function runFetch(
     client: BaseClient;
     path: string;
     pathParameters?: { [key: string]: string };
-    queryParameters?: { [key: string]: string };
+    queryParameters?: { [key: string]: string | number | string[] | number[] };
     headers?: { [key: string]: string };
     rawResponse?: boolean;
     retrySettings?: OperationOptions;
@@ -137,9 +137,12 @@ async function runFetch(
 
   const fetchOptions: fetch.FetchOptions = {
     // This type assertion is technically inaccurate, as some properties may
-    // be missing. However, it hasn't caused issues yet, and it's just temporary
-    // because the latest make-fetch-happen drops support for cacheManager.
-    cacheManager: options.client.clientConfig.cacheManager as Cache,
+    // be missing. Also, Cache uses the browser Request, but ICacheManager uses
+    // node-fetch's Request, which has additional properties.
+    // This is unlikely to cause issues, but it might? It's probably temporary,
+    // anyway, as the latest make-fetch-happen drops support for cacheManager.
+    cacheManager: (options.client.clientConfig
+      .cacheManager as unknown) as Cache,
     method: method,
     body: JSON.stringify(options.body),
     // The package `http-cache-semantics` (used by `make-fetch-happen`) expects
@@ -172,7 +175,7 @@ export function _get(options: {
   client: BaseClient;
   path: string;
   pathParameters?: { [key: string]: string };
-  queryParameters?: { [key: string]: string };
+  queryParameters?: { [key: string]: string | number | string[] | number[] };
   headers?: { [key: string]: string };
   retrySettings?: OperationOptions;
   rawResponse?: boolean;
@@ -192,7 +195,7 @@ export function _delete(options: {
   client: BaseClient;
   path: string;
   pathParameters?: { [key: string]: string };
-  queryParameters?: { [key: string]: string };
+  queryParameters?: { [key: string]: string | number | string[] | number[] };
   headers?: { [key: string]: string };
   retrySettings?: OperationOptions;
   rawResponse?: boolean;
@@ -212,7 +215,7 @@ export function _patch(options: {
   client: BaseClient;
   path: string;
   pathParameters?: { [key: string]: string };
-  queryParameters?: { [key: string]: string };
+  queryParameters?: { [key: string]: string | number | string[] | number[] };
   headers?: { [key: string]: string };
   retrySettings?: OperationOptions;
   rawResponse?: boolean;
@@ -234,7 +237,7 @@ export function _post(options: {
   client: BaseClient;
   path: string;
   pathParameters?: { [key: string]: string };
-  queryParameters?: { [key: string]: string };
+  queryParameters?: { [key: string]: string | number | string[] | number[] };
   headers?: { [key: string]: string };
   retrySettings?: OperationOptions;
   rawResponse?: boolean;
@@ -256,7 +259,7 @@ export function _put(options: {
   client: BaseClient;
   path: string;
   pathParameters?: { [key: string]: string };
-  queryParameters?: { [key: string]: string };
+  queryParameters?: { [key: string]: string | number | string[] | number[] };
   headers?: { [key: string]: string };
   retrySettings?: OperationOptions;
   rawResponse?: boolean;

@@ -17,10 +17,12 @@ import qs from "qs";
 export class Resource {
   constructor(
     private baseUri: string,
-    private baseUriParameters = {},
+    private baseUriParameters: { [key: string]: string } = {},
     private path = "",
-    private pathParameters = {},
-    private queryParameters = {}
+    private pathParameters: { [key: string]: string } = {},
+    private queryParameters: {
+      [key: string]: string | number | string[] | number[];
+    } = {}
   ) {}
 
   /**
@@ -31,9 +33,12 @@ export class Resource {
    * parameters
    * @returns Path with actual parameters
    */
-  substitutePathParameters(path = "", parameters = {}): string {
+  substitutePathParameters(
+    path = "",
+    parameters: { [key: string]: string } = {}
+  ): string {
     return path.replace(/\{([^}]+)\}/g, (_entireMatch, param) => {
-      if (param in parameters && parameters[param] !== undefined) {
+      if (parameters.hasOwnProperty(param) && parameters[param] !== undefined) {
         return parameters[param];
       }
       throw new Error(
