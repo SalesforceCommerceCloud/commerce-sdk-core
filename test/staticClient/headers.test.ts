@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019, salesforce.com, inc.
+ * Copyright (c) 2021, salesforce.com, inc.
  * All rights reserved.
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -7,15 +7,7 @@
 "use strict";
 
 import nock from "nock";
-import chai from "chai";
-import chaiAsPromised from "chai-as-promised";
-
-const expect = chai.expect;
-
-before(() => {
-  chai.should();
-  chai.use(chaiAsPromised);
-});
+import { expect } from "chai";
 
 import { BaseClient } from "../../src/base/client";
 import { _get, _post } from "../../src/base/staticClient";
@@ -111,6 +103,27 @@ describe("Base Client headers", () => {
       });
 
       nock("https://headers.test", { reqheaders: CONNECTION_KEEP_ALIVE })
+        .get("/client/connection/alive")
+        .reply(200, { mock: "data" });
+
+      await _get({ client: client, path: "/client/connection/alive" });
+      expect(nock.isDone()).to.be.true;
+    });
+
+    it("combines headers specified with different cases", async () => {
+      const client = new BaseClient({
+        baseUri: "https://headers.test",
+        headers: {
+          "user-agent": "commerce-sdk",
+          "User-Agent": "commerce-sdk",
+        },
+      });
+
+      nock("https://headers.test", {
+        reqheaders: {
+          "user-agent": "commerce-sdk, commerce-sdk",
+        },
+      })
         .get("/client/connection/alive")
         .reply(200, { mock: "data" });
 
@@ -235,7 +248,31 @@ describe("Base Client headers", () => {
       expect(nock.isDone()).to.be.true;
     });
 
-    it("Merge headers together", async () => {
+    it("makes call with connection header passed to the get function ", async () => {
+      const client = new BaseClient({
+        baseUri: "https://headers.test",
+      });
+
+      nock("https://headers.test", {
+        reqheaders: {
+          "user-agent": "commerce-sdk, commerce-sdk",
+        },
+      })
+        .get("/connection/header")
+        .reply(200, { mock: "data" });
+
+      await _get({
+        client: client,
+        path: "/connection/header",
+        headers: {
+          "user-agent": "commerce-sdk",
+          "User-Agent": "commerce-sdk",
+        },
+      });
+      expect(nock.isDone()).to.be.true;
+    });
+
+    it("merges with headers from client", async () => {
       const client = new BaseClient({
         baseUri: "https://override.test",
         headers: { "X-Custom-Header": "Custom" },
@@ -251,6 +288,25 @@ describe("Base Client headers", () => {
         client: client,
         path: "/merge/headers",
         headers: { Authorization: "Changed" },
+      });
+      expect(nock.isDone()).to.be.true;
+    });
+
+    it("overrides duplicate headers from client", async () => {
+      const client = new BaseClient({
+        baseUri: "https://override.test",
+        headers: { "X-Custom-Header": "from client" },
+      });
+
+      nock("https://override.test")
+        .get("/merge/headers")
+        .matchHeader("X-Custom-Header", "from endpoint")
+        .reply(200, {});
+
+      await _get({
+        client: client,
+        path: "/merge/headers",
+        headers: { "X-Custom-Header": "from endpoint" },
       });
       expect(nock.isDone()).to.be.true;
     });
