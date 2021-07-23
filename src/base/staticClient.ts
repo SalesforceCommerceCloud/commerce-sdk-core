@@ -141,8 +141,7 @@ async function runFetch(
     // node-fetch's Request, which has additional properties.
     // This is unlikely to cause issues, but it might? It's probably temporary,
     // anyway, as the latest make-fetch-happen drops support for cacheManager.
-    cacheManager: (options.client.clientConfig
-      .cacheManager as unknown) as Cache,
+    cacheManager: options.client.clientConfig.cacheManager as unknown as Cache,
     method: method,
     body: JSON.stringify(options.body),
     // The package `http-cache-semantics` (used by `make-fetch-happen`) expects
