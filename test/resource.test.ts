@@ -35,7 +35,7 @@ describe("Resource class tests", () => {
   it("returns baseUri with param and path with param", () => {
     assert.strictEqual(
       new Resource("{param}Uri", { param: "base" }, "/path{param}", {
-        param: 1,
+        param: "1",
       }).toString(),
       "baseUri/path1"
     );

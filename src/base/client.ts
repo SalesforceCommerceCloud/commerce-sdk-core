@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020, salesforce.com, inc.
+ * Copyright (c) 2021, salesforce.com, inc.
  * All rights reserved.
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -12,7 +12,7 @@ import { OperationOptions } from "retry";
 import { CommonParameters } from "./commonParameters";
 import { ICacheManager } from "./cacheManager";
 import { CacheManagerKeyv } from "./cacheManagerKeyv";
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+import { BasicHeaders } from "./resource";
 
 // dotenv config loads environmental variables.
 config();
@@ -28,7 +28,7 @@ config();
 export class ClientConfig {
   public baseUri?: string;
   public cacheManager?: ICacheManager;
-  public headers?: { [key: string]: string };
+  public headers?: BasicHeaders;
   public parameters?: CommonParameters;
   public retrySettings?: OperationOptions;
 }

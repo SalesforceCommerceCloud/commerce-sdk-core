@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-import { decode } from "jsonwebtoken";
+import { decode, JwtPayload } from "jsonwebtoken";
 
 /**
  * A public interface for auth tokens.
@@ -34,8 +34,7 @@ export function stripBearer(header: string): string {
  */
 export class ShopperToken<T> implements IAuthToken {
   public rawToken: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public decodedToken: { [key: string]: any } | string;
+  public decodedToken: null | JwtPayload | string;
   public customerInfo: T;
 
   constructor(dto: T, token: string) {

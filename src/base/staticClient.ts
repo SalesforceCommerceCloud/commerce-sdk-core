@@ -1,24 +1,43 @@
 /*
- * Copyright (c) 2019, salesforce.com, inc.
+ * Copyright (c) 2021, salesforce.com, inc.
  * All rights reserved.
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-import { default as fetch, Response, RequestInit } from "make-fetch-happen";
-
+import type { Response } from "node-fetch";
+import fetch from "make-fetch-happen";
 import _ from "lodash";
 import fetchToCurl from "fetch-to-curl";
-
-import DefaultCache = require("make-fetch-happen/cache");
-export { DefaultCache, Response };
-
 import { Headers } from "minipass-fetch";
-
-import { Resource } from "./resource";
-import { BaseClient } from "./client";
-import { sdkLogger } from "./sdkLogger";
 import { OperationOptions } from "retry";
 import Redis from "ioredis";
+
+import {
+  BasicHeaders,
+  PathParameters,
+  QueryParameters,
+  Resource,
+} from "./resource";
+import { BaseClient } from "./client";
+import { sdkLogger } from "./sdkLogger";
+
+export { DefaultCache } from "make-fetch-happen/cache";
+export { Response };
+
+export type SdkFetchOptions = {
+  client: BaseClient;
+  path: string;
+  pathParameters?: PathParameters;
+  queryParameters?: QueryParameters;
+  headers?: BasicHeaders;
+  rawResponse?: boolean;
+  retrySettings?: OperationOptions;
+  body?: unknown;
+};
+
+export type SdkFetchOptionsNoBody = Omit<SdkFetchOptions, "body">;
+export type SdkFetchOptionsWithBody = SdkFetchOptionsNoBody &
+  Required<Pick<SdkFetchOptions, "body">>;
 
 /**
  * Extends the Error class with the the error being a combination of status code
@@ -66,7 +85,10 @@ export async function getObjectFromResponse(
  * @param resource The resource being requested
  * @param fetchOptions The options to the fetch call
  */
-export function logFetch(resource: string, fetchOptions: RequestInit): void {
+export function logFetch(
+  resource: string,
+  fetchOptions: fetch.FetchOptions
+): void {
   sdkLogger.info(`Request: ${fetchOptions.method.toUpperCase()} ${resource}`);
   sdkLogger.debug(
     `Fetch Options: ${JSON.stringify(
@@ -93,6 +115,22 @@ export const logResponse = (response: Response): void => {
   );
 };
 
+export const getHeaders = (options?: {
+  headers?: BasicHeaders;
+}): BasicHeaders => {
+  return options?.headers ? { ...options.headers } : {};
+};
+
+export const mergeHeaders = (...allHeaders: BasicHeaders[]): BasicHeaders => {
+  const merged: BasicHeaders = {};
+  for (const head of allHeaders) {
+    for (const [key, value] of Object.entries(head)) {
+      merged[key] = merged[key] ? `${merged[key]}, ${value}` : value;
+    }
+  }
+  return merged;
+};
+
 /**
  * Makes an HTTP call specified by the method parameter with the options passed.
  *
@@ -104,17 +142,7 @@ export const logResponse = (response: Response): void => {
  */
 async function runFetch(
   method: "delete" | "get" | "patch" | "post" | "put",
-  options: {
-    client: BaseClient;
-    path: string;
-    pathParameters?: object;
-    queryParameters?: object;
-    headers?: { [key: string]: string };
-    rawResponse?: boolean;
-    retrySettings?: OperationOptions;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    body?: any;
-  }
+  options: SdkFetchOptions
 ): Promise<object> {
   const resource = new Resource(
     options.client.clientConfig.baseUri,
@@ -124,46 +152,37 @@ async function runFetch(
     options.queryParameters
   ).toString();
 
-  // Lets grab all the RequestInit defaults from the clientConfig
-  const defaultsFromClientConfig: RequestInit = {
-    cacheManager: options.client.clientConfig.cacheManager,
-    retry: options.client.clientConfig.retrySettings,
-  };
-
-  // Let's create a request init object of all configurations in the current request
-  const currentOptionsFromRequest: RequestInit = {
-    method: method,
-    retry: options.retrySettings,
-    body: JSON.stringify(options.body),
-  };
-
-  // Merging like this will copy items into a new object, this removes the need to clone and then merge as we were before.
-  let finalOptions = _.merge(
-    {},
-    defaultsFromClientConfig,
-    currentOptionsFromRequest
-  );
-
-  // Headers are treated separately to be able to move them into their own object.
-  const headers = new Headers(_.merge({}, options.client.clientConfig.headers));
-
-  // Overwrite client header defaults with headers in call
-  for (const [header, value] of Object.entries(options.headers || {})) {
+  // Multiple headers can be specified by using different cases. The `Headers`
+  // class handles this automatically.
+  const headers = new Headers(options.client.clientConfig.headers);
+  for (const [header, value] of new Headers(options.headers)) {
+    // Headers specified on the request will _replace_ those specified on the
+    // client, rather than be appended to them.
     headers.set(header, value);
   }
 
-  finalOptions["headers"] = headers;
+  const fetchOptions: fetch.FetchOptions = {
+    // This type assertion is technically inaccurate, as some properties may
+    // be missing. Also, Cache uses the browser Request, but ICacheManager uses
+    // node-fetch's Request, which has additional properties.
+    // This is unlikely to cause issues, but it might? It's probably temporary,
+    // anyway, as the latest make-fetch-happen drops support for cacheManager.
+    cacheManager: options.client.clientConfig.cacheManager as unknown as Cache,
+    method: method,
+    body: JSON.stringify(options.body),
+    // The package `http-cache-semantics` (used by `make-fetch-happen`) expects
+    // headers to be plain objects, not instances of Headers.
+    // TODO: _.fromPairs can be replaced with Object.fromEntries when support
+    // for node v10 is dropped.
+    headers: _.fromPairs([...headers]),
+    retry: {
+      ...options.client.clientConfig.retrySettings,
+      ...options.retrySettings,
+    },
+  };
 
-  // This line merges the values and then strips anything that is undefined.
-  //  (NOTE: Not sure we have to, as all tests pass regardless, but going to anyways)
-  finalOptions = _.pickBy(finalOptions, _.identity);
-  // Convert Headers object into a regular object. `http-cache-semantics`, a
-  // package used by `make-fetch-happen` to manipulate headers expects headers
-  // to be regular objects.
-  finalOptions.headers = _.fromPairs([...headers]);
-
-  logFetch(resource, finalOptions);
-  const response = await fetch(resource, finalOptions);
+  logFetch(resource, fetchOptions);
+  const response = await fetch(resource, fetchOptions);
   logResponse(response);
 
   return options.rawResponse ? response : getObjectFromResponse(response);
@@ -177,15 +196,7 @@ async function runFetch(
  * @returns Either the Response object or the DTO inside it wrapped in a promise,
  * depending upon options.rawResponse
  */
-export function _get(options: {
-  client: BaseClient;
-  path: string;
-  pathParameters?: object;
-  queryParameters?: object;
-  headers?: { [key: string]: string };
-  retrySettings?: OperationOptions;
-  rawResponse?: boolean;
-}): Promise<object> {
+export async function _get(options: SdkFetchOptionsNoBody): Promise<object> {
   return runFetch("get", options);
 }
 
@@ -197,15 +208,7 @@ export function _get(options: {
  * @returns Either the Response object or the DTO inside it wrapped in a promise,
  * depending upon options.rawResponse
  */
-export function _delete(options: {
-  client: BaseClient;
-  path: string;
-  pathParameters?: object;
-  queryParameters?: object;
-  headers?: { [key: string]: string };
-  retrySettings?: OperationOptions;
-  rawResponse?: boolean;
-}): Promise<object> {
+export async function _delete(options: SdkFetchOptionsNoBody): Promise<object> {
   return runFetch("delete", options);
 }
 
@@ -217,17 +220,9 @@ export function _delete(options: {
  * @returns Either the Response object or the DTO inside it wrapped in a promise,
  * depending upon options.rawResponse
  */
-export function _patch(options: {
-  client: BaseClient;
-  path: string;
-  pathParameters?: object;
-  queryParameters?: object;
-  headers?: { [key: string]: string };
-  retrySettings?: OperationOptions;
-  rawResponse?: boolean;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  body: any;
-}): Promise<object> {
+export async function _patch(
+  options: SdkFetchOptionsWithBody
+): Promise<object> {
   return runFetch("patch", options);
 }
 
@@ -239,17 +234,7 @@ export function _patch(options: {
  * @returns Either the Response object or the DTO inside it wrapped in a promise,
  * depending upon options.rawResponse
  */
-export function _post(options: {
-  client: BaseClient;
-  path: string;
-  pathParameters?: object;
-  queryParameters?: object;
-  headers?: { [key: string]: string };
-  retrySettings?: OperationOptions;
-  rawResponse?: boolean;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  body: any;
-}): Promise<object> {
+export async function _post(options: SdkFetchOptionsWithBody): Promise<object> {
   return runFetch("post", options);
 }
 
@@ -261,16 +246,6 @@ export function _post(options: {
  * @returns Either the Response object or the DTO inside it wrapped in a promise,
  * depending upon options.rawResponse
  */
-export function _put(options: {
-  client: BaseClient;
-  path: string;
-  pathParameters?: object;
-  queryParameters?: object;
-  headers?: { [key: string]: string };
-  retrySettings?: OperationOptions;
-  rawResponse?: boolean;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  body: any;
-}): Promise<object> {
+export async function _put(options: SdkFetchOptionsWithBody): Promise<object> {
   return runFetch("put", options);
 }

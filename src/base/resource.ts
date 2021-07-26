@@ -6,6 +6,14 @@
  */
 import qs from "qs";
 
+export type BasicHeaders = Record<string, string>;
+export type BaseUriParameters = Record<string, string>;
+export type PathParameters = Record<string, string>;
+export type QueryParameters = Record<
+  string,
+  string | number | string[] | number[]
+>;
+
 /**
  * A class to render a flattened URL from the parts including template
  * parameters. Out of the various options to render an array in a query string,
@@ -17,10 +25,10 @@ import qs from "qs";
 export class Resource {
   constructor(
     private baseUri: string,
-    private baseUriParameters = {},
+    private baseUriParameters: BaseUriParameters = {},
     private path = "",
-    private pathParameters = {},
-    private queryParameters = {}
+    private pathParameters: PathParameters = {},
+    private queryParameters: QueryParameters = {}
   ) {}
 
   /**
@@ -31,9 +39,9 @@ export class Resource {
    * parameters
    * @returns Path with actual parameters
    */
-  substitutePathParameters(path = "", parameters = {}): string {
+  substitutePathParameters(path = "", parameters: PathParameters = {}): string {
     return path.replace(/\{([^}]+)\}/g, (_entireMatch, param) => {
-      if (param in parameters && parameters[param] !== undefined) {
+      if (parameters.hasOwnProperty(param) && parameters[param] !== undefined) {
         return parameters[param];
       }
       throw new Error(
