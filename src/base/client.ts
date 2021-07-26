@@ -12,6 +12,7 @@ import { OperationOptions } from "retry";
 import { CommonParameters } from "./commonParameters";
 import { ICacheManager } from "./cacheManager";
 import { CacheManagerKeyv } from "./cacheManagerKeyv";
+import { BasicHeaders } from "./resource";
 
 // dotenv config loads environmental variables.
 config();
@@ -27,7 +28,7 @@ config();
 export class ClientConfig {
   public baseUri?: string;
   public cacheManager?: ICacheManager;
-  public headers?: { [key: string]: string };
+  public headers?: BasicHeaders;
   public parameters?: CommonParameters;
   public retrySettings?: OperationOptions;
 }

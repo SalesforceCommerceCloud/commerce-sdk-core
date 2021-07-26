@@ -12,12 +12,32 @@ import { Headers } from "minipass-fetch";
 import { OperationOptions } from "retry";
 import Redis from "ioredis";
 
-import { Resource } from "./resource";
+import {
+  BasicHeaders,
+  PathParameters,
+  QueryParameters,
+  Resource,
+} from "./resource";
 import { BaseClient } from "./client";
 import { sdkLogger } from "./sdkLogger";
 
 export { DefaultCache } from "make-fetch-happen/cache";
 export { Response };
+
+export type SdkFetchOptions = {
+  client: BaseClient;
+  path: string;
+  pathParameters?: PathParameters;
+  queryParameters?: QueryParameters;
+  headers?: BasicHeaders;
+  rawResponse?: boolean;
+  retrySettings?: OperationOptions;
+  body?: unknown;
+};
+
+export type SdkFetchOptionsNoBody = Omit<SdkFetchOptions, "body">;
+export type SdkFetchOptionsWithBody = SdkFetchOptionsNoBody &
+  Required<Pick<SdkFetchOptions, "body">>;
 
 /**
  * Extends the Error class with the the error being a combination of status code
@@ -106,17 +126,7 @@ export const logResponse = (response: Response): void => {
  */
 async function runFetch(
   method: "delete" | "get" | "patch" | "post" | "put",
-  options: {
-    client: BaseClient;
-    path: string;
-    pathParameters?: { [key: string]: string };
-    queryParameters?: { [key: string]: string | number | string[] | number[] };
-    headers?: { [key: string]: string };
-    rawResponse?: boolean;
-    retrySettings?: OperationOptions;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    body?: any;
-  }
+  options: SdkFetchOptions
 ): Promise<object> {
   const resource = new Resource(
     options.client.clientConfig.baseUri,
@@ -170,15 +180,7 @@ async function runFetch(
  * @returns Either the Response object or the DTO inside it wrapped in a promise,
  * depending upon options.rawResponse
  */
-export function _get(options: {
-  client: BaseClient;
-  path: string;
-  pathParameters?: { [key: string]: string };
-  queryParameters?: { [key: string]: string | number | string[] | number[] };
-  headers?: { [key: string]: string };
-  retrySettings?: OperationOptions;
-  rawResponse?: boolean;
-}): Promise<object> {
+export async function _get(options: SdkFetchOptionsNoBody): Promise<object> {
   return runFetch("get", options);
 }
 
@@ -190,15 +192,7 @@ export function _get(options: {
  * @returns Either the Response object or the DTO inside it wrapped in a promise,
  * depending upon options.rawResponse
  */
-export function _delete(options: {
-  client: BaseClient;
-  path: string;
-  pathParameters?: { [key: string]: string };
-  queryParameters?: { [key: string]: string | number | string[] | number[] };
-  headers?: { [key: string]: string };
-  retrySettings?: OperationOptions;
-  rawResponse?: boolean;
-}): Promise<object> {
+export async function _delete(options: SdkFetchOptionsNoBody): Promise<object> {
   return runFetch("delete", options);
 }
 
@@ -210,17 +204,9 @@ export function _delete(options: {
  * @returns Either the Response object or the DTO inside it wrapped in a promise,
  * depending upon options.rawResponse
  */
-export function _patch(options: {
-  client: BaseClient;
-  path: string;
-  pathParameters?: { [key: string]: string };
-  queryParameters?: { [key: string]: string | number | string[] | number[] };
-  headers?: { [key: string]: string };
-  retrySettings?: OperationOptions;
-  rawResponse?: boolean;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  body: any;
-}): Promise<object> {
+export async function _patch(
+  options: SdkFetchOptionsWithBody
+): Promise<object> {
   return runFetch("patch", options);
 }
 
@@ -232,17 +218,7 @@ export function _patch(options: {
  * @returns Either the Response object or the DTO inside it wrapped in a promise,
  * depending upon options.rawResponse
  */
-export function _post(options: {
-  client: BaseClient;
-  path: string;
-  pathParameters?: { [key: string]: string };
-  queryParameters?: { [key: string]: string | number | string[] | number[] };
-  headers?: { [key: string]: string };
-  retrySettings?: OperationOptions;
-  rawResponse?: boolean;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  body: any;
-}): Promise<object> {
+export async function _post(options: SdkFetchOptionsWithBody): Promise<object> {
   return runFetch("post", options);
 }
 
@@ -254,16 +230,6 @@ export function _post(options: {
  * @returns Either the Response object or the DTO inside it wrapped in a promise,
  * depending upon options.rawResponse
  */
-export function _put(options: {
-  client: BaseClient;
-  path: string;
-  pathParameters?: { [key: string]: string };
-  queryParameters?: { [key: string]: string | number | string[] | number[] };
-  headers?: { [key: string]: string };
-  retrySettings?: OperationOptions;
-  rawResponse?: boolean;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  body: any;
-}): Promise<object> {
+export async function _put(options: SdkFetchOptionsWithBody): Promise<object> {
   return runFetch("put", options);
 }
