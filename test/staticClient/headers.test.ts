@@ -10,7 +10,12 @@ import nock from "nock";
 import { expect } from "chai";
 
 import { BaseClient } from "../../src/base/client";
-import { _get, _post } from "../../src/base/staticClient";
+import {
+  _get,
+  _post,
+  getHeaders,
+  mergeHeaders,
+} from "../../src/base/staticClient";
 
 // Common headers used in tests
 const CONNECTION_CLOSE = { connection: "close" };
@@ -309,6 +314,42 @@ describe("Base Client headers", () => {
         headers: { "X-Custom-Header": "from endpoint" },
       });
       expect(nock.isDone()).to.be.true;
+    });
+  });
+});
+
+describe("Headers helpers", () => {
+  describe("getHeaders", () => {
+    it("clones headers from options with headers", () => {
+      const expected = { Accept: "application/json" };
+      expect(getHeaders({ headers: expected })).to.not.equal(expected);
+      expect(getHeaders({ headers: expected })).to.deep.equal(expected);
+    });
+
+    it("returns an empty object from options without headers", () => {
+      expect(getHeaders({})).to.be.an("object").that.is.empty;
+    });
+
+    it("returns an empty object not given options", () => {
+      expect(getHeaders()).to.be.an("object").that.is.empty;
+    });
+  });
+
+  describe("mergeHeaders", () => {
+    it("merges different headers from different objects", () => {
+      expect(mergeHeaders({ a: "A" }, { b: "B" }, { c: "C" })).to.deep.equal({
+        a: "A",
+        b: "B",
+        c: "C",
+      });
+    });
+  });
+
+  it("merges same headers from different objects", () => {
+    expect(
+      mergeHeaders({ message: "Hello" }, { message: "world!" })
+    ).to.deep.equal({
+      message: "Hello, world!",
     });
   });
 });

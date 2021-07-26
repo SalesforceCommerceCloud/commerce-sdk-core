@@ -115,6 +115,22 @@ export const logResponse = (response: Response): void => {
   );
 };
 
+export const getHeaders = (options?: {
+  headers?: BasicHeaders;
+}): BasicHeaders => {
+  return options?.headers ? { ...options.headers } : {};
+};
+
+export const mergeHeaders = (...allHeaders: BasicHeaders[]): BasicHeaders => {
+  const merged: BasicHeaders = {};
+  for (const head of allHeaders) {
+    for (const [key, value] of Object.entries(head)) {
+      merged[key] = merged[key] ? `${merged[key]}, ${value}` : value;
+    }
+  }
+  return merged;
+};
+
 /**
  * Makes an HTTP call specified by the method parameter with the options passed.
  *
