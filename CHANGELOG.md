@@ -1,3 +1,7 @@
+### 1.5.3
+* Different case headers specified when invoking a method will now properly be merged, rather than only one being used.
+Headers specified when invoking a method will overwrite headers specified in the client config, regardless of case.
+
 ### 1.5.2
 * Security updates
 
