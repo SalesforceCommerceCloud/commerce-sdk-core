@@ -169,4 +169,18 @@ describe("Resource class tests", () => {
       "baseUri/path/id1/and/id2?firstQueryParam=v1&second-query-param=value%202"
     );
   });
+
+  it("returns correct url with boolean query parameter set to true", () => {
+    assert.strictEqual(
+      new Resource("baseUri", {}, "/path", {}, { bool: true }).toString(),
+      "baseUri/path?bool=true"
+    );
+  });
+
+  it("returns correct url with boolean query parameter set to false", () => {
+    assert.strictEqual(
+      new Resource("baseUri", {}, "/path", {}, { bool: false }).toString(),
+      "baseUri/path?bool=false"
+    );
+  });
 });
