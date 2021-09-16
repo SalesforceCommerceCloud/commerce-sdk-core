@@ -11,7 +11,7 @@ export type BaseUriParameters = Record<string, string>;
 export type PathParameters = Record<string, string>;
 export type QueryParameters = Record<
   string,
-  string | number | string[] | number[]
+  boolean | string | number | string[] | number[]
 >;
 
 /**
