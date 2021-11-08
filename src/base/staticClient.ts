@@ -93,8 +93,12 @@ export function logFetch(
   sdkLogger.debug(
     `Fetch Options: ${JSON.stringify(
       fetchOptions,
-      // Redis clusters have circular references and can't be converted to JSON
-      (key, val) => (val instanceof Redis.Cluster ? "<Redis Cluster>" : val),
+      (key, val) => {
+        // Redis instances have circular references and can't be converted to JSON
+        if (val instanceof Redis) return "<Redis>";
+        if (val instanceof Redis.Cluster) return "<Redis Cluster>";
+        return val;
+      },
       2
     )}\nCurl: ${fetchToCurl(resource, fetchOptions)}`
   );
