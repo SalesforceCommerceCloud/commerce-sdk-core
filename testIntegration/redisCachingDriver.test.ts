@@ -24,8 +24,11 @@ describe("Redis cache tests", () => {
       }),
     });
   });
-  after(function () {
-    this.client.clientConfig.cacheManager.quit();
+  after(async function () {
+    const cacheManager: CacheManagerRedis<unknown> =
+      this.client.clientConfig.cacheManager;
+    await cacheManager.keyv.clear();
+    await cacheManager.quit();
   });
   cacheTests();
   etagTests();
