@@ -54,7 +54,7 @@
     ]
   },
   "dependencies": {
-    "@keyv/redis": "^2.2.0",
+    "@keyv/redis": "^2.2.1",
     "dotenv": "^8.6.0",
     "fetch-to-curl": "^0.5.2",
     "ioredis": "^4.28.0",
