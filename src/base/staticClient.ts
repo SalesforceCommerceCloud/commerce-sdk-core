@@ -10,7 +10,7 @@ import _ from "lodash";
 import fetchToCurl from "fetch-to-curl";
 import { Headers } from "minipass-fetch";
 import { OperationOptions } from "retry";
-import Redis from "ioredis";
+import KeyvRedis from "@keyv/redis";
 
 import {
   BasicHeaders,
@@ -93,8 +93,12 @@ export function logFetch(
   sdkLogger.debug(
     `Fetch Options: ${JSON.stringify(
       fetchOptions,
-      // Redis clusters have circular references and can't be converted to JSON
-      (key, val) => (val instanceof Redis.Cluster ? "<Redis Cluster>" : val),
+      function reducer(key, val) {
+        if (this instanceof KeyvRedis && key === "redis") {
+          return "<Removed from log by @commerce-apps/core, as it is not serializable>";
+        }
+        return val;
+      },
       2
     )}\nCurl: ${fetchToCurl(resource, fetchOptions)}`
   );
