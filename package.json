@@ -80,7 +80,7 @@
     "@types/lodash": "^4.14.176",
     "@types/make-fetch-happen": "^8.0.2",
     "@types/mocha": "^9.0.0",
-    "@types/node": "^12.20.36",
+    "@types/node": "^10.17.60",
     "@types/node-fetch": "^2.5.12",
     "@types/qs": "^6.9.7",
     "@types/retry": "^0.12.1",
