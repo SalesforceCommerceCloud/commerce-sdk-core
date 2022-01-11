@@ -21,6 +21,7 @@ import {
   ResponseError,
   transformRequestBody,
 } from "../../src/base/staticClient";
+import { URLSearchParams } from "url";
 
 before(() => chai.use(chaiAsPromised));
 
