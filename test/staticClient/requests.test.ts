@@ -26,7 +26,9 @@ import {
   _post,
   _put,
   ResponseError,
+  transformRequestBody,
 } from "../../src/base/staticClient";
+import { URLSearchParams } from "url";
 
 describe("Base Client requests", () => {
   describe("GET request", () => {
@@ -303,6 +305,41 @@ describe("Base Client requests", () => {
         body: { content: "rainbow" },
       });
       expect(nock.isDone()).to.be.true;
+    });
+  });
+
+  describe("Content-Type body transformation", () => {
+    it("returns a JSON string if no Content-Type is specified", () => {
+      expect(transformRequestBody({ body: true }, {})).to.equal(
+        '{"body":true}'
+      );
+    });
+
+    it("returns a JSON string for application/json", () => {
+      expect(
+        transformRequestBody(
+          { body: true },
+          { headers: { "Content-Type": "application/json" } }
+        )
+      ).to.equal('{"body":true}');
+    });
+
+    it("returns URL search params for application/x-www-form-urlencoded", () => {
+      const actual = transformRequestBody(
+        { body: true },
+        { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
+      );
+      const expected = new URLSearchParams("body=true");
+
+      expect(actual).to.be.an.instanceOf(URLSearchParams);
+      expect(`${actual}`).to.equal(`${expected}`);
+    });
+
+    it("returns unmodified body for unknown media type", () => {
+      const body = { body: true };
+      expect(
+        transformRequestBody(body, { headers: { "Content-Type": "unknown" } })
+      ).to.equal(body);
     });
   });
 });
