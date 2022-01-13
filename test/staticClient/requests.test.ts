@@ -6,17 +6,10 @@
  */
 "use strict";
 
-import nock from "nock";
-
-import chai from "chai";
+import chai, { expect } from "chai";
 import chaiAsPromised from "chai-as-promised";
-
-const expect = chai.expect;
-
-before(() => {
-  chai.should();
-  chai.use(chaiAsPromised);
-});
+import nock from "nock";
+import { URLSearchParams } from "url";
 
 import { BaseClient } from "../../src/base/client";
 import {
@@ -26,7 +19,10 @@ import {
   _post,
   _put,
   ResponseError,
+  transformRequestBody,
 } from "../../src/base/staticClient";
+
+before(() => chai.use(chaiAsPromised));
 
 describe("Base Client requests", () => {
   describe("GET request", () => {
@@ -37,7 +33,7 @@ describe("Base Client requests", () => {
       nock("https://get.test").get("/get").reply(200, { mock: "data" });
 
       const data = await _get({ client: client, path: "/get" });
-      expect(data).to.eql({ mock: "data" });
+      expect(data).to.deep.equal({ mock: "data" });
       expect(nock.isDone()).to.be.true;
     });
   });
@@ -63,10 +59,12 @@ describe("Base Client requests", () => {
     it("is not ok when attempting to delete nonexistent resource", () => {
       nock("https://delete.test").delete("/delete/404").reply(404);
 
-      return _delete({
-        client: client,
-        path: "/delete/404",
-      }).should.eventually.be.rejectedWith(ResponseError);
+      return expect(
+        _delete({
+          client: client,
+          path: "/delete/404",
+        })
+      ).to.eventually.be.rejectedWith(ResponseError);
     });
 
     it("deletes resource with id and returns 200", async () => {
@@ -117,11 +115,13 @@ describe("Base Client requests", () => {
     it("is not ok when attempting to post nonexistent collection", () => {
       nock("https://post.test").post("/post/404").reply(404);
 
-      return _post({
-        client: client,
-        path: "/post/404",
-        body: { location: "oz" },
-      }).should.eventually.be.rejectedWith(ResponseError);
+      return expect(
+        _post({
+          client: client,
+          path: "/post/404",
+          body: { location: "oz" },
+        })
+      ).to.eventually.be.rejectedWith(ResponseError);
     });
 
     it("post resource with body and returns 201", async () => {
@@ -137,7 +137,7 @@ describe("Base Client requests", () => {
         body: { location: "oz" },
       });
       expect(nock.isDone()).to.be.true;
-      expect(response).to.be.deep.equal({ location: "oz" });
+      expect(response).to.deep.equal({ location: "oz" });
     });
 
     it("post resource with site id in query param, body and returns 201", async () => {
@@ -155,7 +155,7 @@ describe("Base Client requests", () => {
         body: { content: "new" },
       });
       expect(nock.isDone()).to.be.true;
-      expect(response).to.be.deep.equal({ content: "new" });
+      expect(response).to.deep.equal({ content: "new" });
     });
   });
 
@@ -180,17 +180,19 @@ describe("Base Client requests", () => {
         body: { something: "foo" },
       });
       expect(nock.isDone()).to.be.true;
-      expect(response).to.be.deep.equal({ something: "foo" });
+      expect(response).to.deep.equal({ something: "foo" });
     });
 
     it("is not ok when attempting to put nonexistent resource", () => {
       nock("https://put.test").put("/put/404").reply(404);
 
-      return _put({
-        client: client,
-        path: "/put/404",
-        body: {},
-      }).should.eventually.be.rejectedWith(ResponseError);
+      return expect(
+        _put({
+          client: client,
+          path: "/put/404",
+          body: {},
+        })
+      ).to.eventually.be.rejectedWith(ResponseError);
     });
 
     it("put resource with body and returns 200", async () => {
@@ -206,7 +208,7 @@ describe("Base Client requests", () => {
         body: { body: "is_here" },
       });
       expect(nock.isDone()).to.be.true;
-      expect(response).to.be.deep.equal({ body: "is_here" });
+      expect(response).to.deep.equal({ body: "is_here" });
     });
 
     it("put resource with body and returns 204", async () => {
@@ -239,7 +241,7 @@ describe("Base Client requests", () => {
         body: { content: "rainbow" },
       });
       expect(nock.isDone()).to.be.true;
-      expect(response).to.be.deep.equal({ content: "rainbow" });
+      expect(response).to.deep.equal({ content: "rainbow" });
     });
   });
 
@@ -303,6 +305,41 @@ describe("Base Client requests", () => {
         body: { content: "rainbow" },
       });
       expect(nock.isDone()).to.be.true;
+    });
+  });
+
+  describe("Content-Type body transformation", () => {
+    it("returns a JSON string if no Content-Type is specified", () => {
+      expect(transformRequestBody({ body: true }, {})).to.equal(
+        '{"body":true}'
+      );
+    });
+
+    it("returns a JSON string for application/json", () => {
+      expect(
+        transformRequestBody(
+          { body: true },
+          { headers: { "Content-Type": "application/json" } }
+        )
+      ).to.equal('{"body":true}');
+    });
+
+    it("returns URL search params for application/x-www-form-urlencoded", () => {
+      const actual = transformRequestBody(
+        { body: true },
+        { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
+      );
+      const expected = new URLSearchParams("body=true");
+
+      expect(actual).to.be.an.instanceOf(URLSearchParams);
+      expect(`${actual}`).to.equal(`${expected}`);
+    });
+
+    it("returns unmodified body for unknown media type", () => {
+      const body = { body: true };
+      expect(
+        transformRequestBody(body, { headers: { "Content-Type": "unknown" } })
+      ).to.equal(body);
     });
   });
 });
