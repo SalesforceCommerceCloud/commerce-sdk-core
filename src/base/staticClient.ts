@@ -146,7 +146,7 @@ export const transformRequestBody = (
   body: unknown,
   request: fetch.FetchOptions
 ): BodyInit => {
-  const contentType = request.headers?.["Content-Type"];
+  const contentType = request.headers?.["content-type"];
   if (!contentType) {
     // Preserve default behavior from versions <= 1.5.4
     return JSON.stringify(body);
@@ -187,7 +187,7 @@ async function runFetch(
   ).toString();
 
   // Multiple headers can be specified by using different cases. The `Headers`
-  // class handles this automatically.
+  // class handles this automatically. It also normalizes header names to all lower case.
   const headers = new Headers(options.client.clientConfig.headers);
   for (const [header, value] of new Headers(options.headers)) {
     // Headers specified on the request will _replace_ those specified on the

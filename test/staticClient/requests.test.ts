@@ -24,6 +24,8 @@ import {
 
 before(() => chai.use(chaiAsPromised));
 
+before(() => chai.use(chaiAsPromised));
+
 describe("Base Client requests", () => {
   describe("GET request", () => {
     afterEach(nock.cleanAll);
@@ -319,7 +321,7 @@ describe("Base Client requests", () => {
       expect(
         transformRequestBody(
           { body: true },
-          { headers: { "Content-Type": "application/json" } }
+          { headers: { "content-type": "application/json" } }
         )
       ).to.equal('{"body":true}');
     });
@@ -327,7 +329,7 @@ describe("Base Client requests", () => {
     it("returns URL search params for application/x-www-form-urlencoded", () => {
       const actual = transformRequestBody(
         { body: true },
-        { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
+        { headers: { "content-type": "application/x-www-form-urlencoded" } }
       );
       const expected = new URLSearchParams("body=true");
 
@@ -338,7 +340,7 @@ describe("Base Client requests", () => {
     it("returns unmodified body for unknown media type", () => {
       const body = { body: true };
       expect(
-        transformRequestBody(body, { headers: { "Content-Type": "unknown" } })
+        transformRequestBody(body, { headers: { "content-type": "unknown" } })
       ).to.equal(body);
     });
   });
