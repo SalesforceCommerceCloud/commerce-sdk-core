@@ -4,13 +4,14 @@
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-import type { Response } from "node-fetch";
+import type { Response, BodyInit } from "node-fetch";
 import fetch from "make-fetch-happen";
 import _ from "lodash";
 import fetchToCurl from "fetch-to-curl";
 import { Headers } from "minipass-fetch";
 import { OperationOptions } from "retry";
 import KeyvRedis from "@keyv/redis";
+import { URLSearchParams } from "url";
 
 import {
   BasicHeaders,
@@ -136,6 +137,35 @@ export const mergeHeaders = (...allHeaders: BasicHeaders[]): BasicHeaders => {
 };
 
 /**
+ * Transforms a request body into a format matching the media type of the request.
+ * @param body Unparsed request body
+ * @param request Request data
+ * @returns Parsed request body that can be used by `fetch`.
+ */
+export const transformRequestBody = (
+  body: unknown,
+  request: fetch.FetchOptions
+): BodyInit => {
+  const contentType = request.headers?.["content-type"];
+  if (!contentType) {
+    // Preserve default behavior from versions <= 1.5.4
+    return JSON.stringify(body);
+  }
+  switch (contentType) {
+    case "application/json":
+      return JSON.stringify(body);
+    case "application/x-www-form-urlencoded":
+      // The type def for URLSearchParams is restrictive. `Record<string, any>` will work, as the
+      // values get cast to strings. In any case, the only API that currently uses this media type
+      // is SLAS, and all of their params are strings.
+      return new URLSearchParams(body as Record<string, string>);
+    default:
+      // All types used by the APIs are currently covered; this would require stuff
+      return body as BodyInit;
+  }
+};
+
+/**
  * Makes an HTTP call specified by the method parameter with the options passed.
  *
  * @param method - Type of HTTP operation
@@ -157,7 +187,7 @@ async function runFetch(
   ).toString();
 
   // Multiple headers can be specified by using different cases. The `Headers`
-  // class handles this automatically.
+  // class handles this automatically. It also normalizes header names to all lower case.
   const headers = new Headers(options.client.clientConfig.headers);
   for (const [header, value] of new Headers(options.headers)) {
     // Headers specified on the request will _replace_ those specified on the
@@ -173,7 +203,6 @@ async function runFetch(
     // anyway, as the latest make-fetch-happen drops support for cacheManager.
     cacheManager: options.client.clientConfig.cacheManager as unknown as Cache,
     method: method,
-    body: JSON.stringify(options.body),
     // The package `http-cache-semantics` (used by `make-fetch-happen`) expects
     // headers to be plain objects, not instances of Headers.
     // TODO: _.fromPairs can be replaced with Object.fromEntries when support
@@ -184,6 +213,10 @@ async function runFetch(
       ...options.retrySettings,
     },
   };
+
+  if (typeof options.body !== "undefined") {
+    fetchOptions.body = transformRequestBody(options.body, fetchOptions);
+  }
 
   logFetch(resource, fetchOptions);
   const response = await fetch(resource, fetchOptions);
