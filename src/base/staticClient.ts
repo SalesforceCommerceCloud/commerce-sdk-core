@@ -1,10 +1,10 @@
 /*
- * Copyright (c) 2021, salesforce.com, inc.
+ * Copyright (c) 2022, salesforce.com, inc.
  * All rights reserved.
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-import type { Response, BodyInit } from "node-fetch";
+import type { Response, BodyInit, RequestInit } from "node-fetch";
 import fetch from "make-fetch-happen";
 import _ from "lodash";
 import fetchToCurl from "fetch-to-curl";
@@ -33,6 +33,7 @@ export type SdkFetchOptions = {
   headers?: BasicHeaders;
   rawResponse?: boolean;
   retrySettings?: OperationOptions;
+  fetchOptions?: RequestInit,
   body?: unknown;
 };
 
@@ -212,6 +213,8 @@ async function runFetch(
       ...options.client.clientConfig.retrySettings,
       ...options.retrySettings,
     },
+    ...options.client.clientConfig.fetchOptions,
+    ...options.fetchOptions,
   };
 
   if (typeof options.body !== "undefined") {
