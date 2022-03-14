@@ -33,7 +33,7 @@ export type SdkFetchOptions = {
   headers?: BasicHeaders;
   rawResponse?: boolean;
   retrySettings?: OperationOptions;
-  fetchOptions?: RequestInit,
+  fetchOptions?: RequestInit;
   body?: unknown;
 };
 
@@ -197,6 +197,8 @@ async function runFetch(
   }
 
   const fetchOptions: fetch.FetchOptions = {
+    ...options.client.clientConfig.fetchOptions,
+    ...options.fetchOptions,
     // This type assertion is technically inaccurate, as some properties may
     // be missing. Also, Cache uses the browser Request, but ICacheManager uses
     // node-fetch's Request, which has additional properties.
@@ -213,8 +215,6 @@ async function runFetch(
       ...options.client.clientConfig.retrySettings,
       ...options.retrySettings,
     },
-    ...options.client.clientConfig.fetchOptions,
-    ...options.fetchOptions,
   };
 
   if (typeof options.body !== "undefined") {
