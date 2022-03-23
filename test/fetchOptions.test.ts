@@ -6,89 +6,85 @@
  */
 
 import sinon from "sinon";
-import fetchToCurl from "fetch-to-curl";
-import { _get } from "../src/base/staticClient";
-import KeyvRedis from "@keyv/redis";
-import { sdkLogger } from "../src/base/sdkLogger";
-import nock from "nock";
 import { BaseClient } from "../src/base/client";
-
-function getFetchOptionsMsg(resource, fetchOptions): string {
-  return `Fetch Options: ${JSON.stringify(
-    fetchOptions,
-    function reducer(key, val) {
-      if (this instanceof KeyvRedis && key === "redis") {
-        return "<Removed from log by @commerce-apps/core, as it is not serializable>";
-      }
-      return val;
-    },
-    2
-  )}\nCurl: ${fetchToCurl(resource, fetchOptions)}`
-}
-
+import { assert } from "chai";
+import proxyquire from "proxyquire";
 describe("Fetch Options", () => {
+  const fetchStub = sinon.stub();
+  const staticClient = proxyquire("../src/base/staticClient", {
+    "make-fetch-happen": fetchStub,
+  });
 
-    let stub: sinon.SinonStub;
-
-    before(() => sdkLogger.setLevel(sdkLogger.levels.DEBUG));
-
-    beforeEach(() => {
-        sinon.restore();
-        stub = sinon.stub(sdkLogger, "debug");
+  beforeEach(() => {
+    // sinon.restore();
+    fetchStub.reset();
+    fetchStub.returns({
+      ok: "ok",
+      status: "status",
+      headers: { raw: (): string => "" },
     });
-
-    afterEach(() => stub.restore());
-
-    const expectedFetchOptions = {
-        redirect: "manual",
-        cacheManager: {
-            uncacheableRequestHeaders: [
-            "authorization"
-            ],
-            keyv: {
-            _events: {},
-            _eventsCount: 1,
-            opts: {
-                namespace: "keyv",
-                store: {
-                maxSize: 10000,
-                cache: {},
-                oldCache: {},
-                _size: 98,
-                namespace: "keyv"
-                }
-            }
-            }
-        },
-        method: "get",
-        headers: {
-            connection: "close",
-            "content-type": "application/json",
-        },
-        retry: {}
-    }
-
-    it("can be passed in from client config", async () => {
-        const uri = "https://localhost:3000";
-        const client = new BaseClient({
-            baseUri: uri,
-            fetchOptions: { redirect: "manual" }
-        });
-        nock(uri).get("/test").reply(200);
-        await _get({ client: client, path: "/test" });
-        sinon.assert.calledWith(stub.firstCall, getFetchOptionsMsg(uri, expectedFetchOptions));
-        // TODO:  fix test
+  });
+  it("can be passed in from client config", async () => {
+    const uri = "https://localhost:3000";
+    const client = new BaseClient({
+      baseUri: uri,
+      fetchOptions: { redirect: "manual" },
     });
+    await staticClient._get({ client: client, path: "", rawResponse: true });
+    const passedFetchOptions = fetchStub.getCall(0).args[1];
+    assert(passedFetchOptions.hasOwnProperty("redirect"));
+    assert(passedFetchOptions.redirect === "manual");
+  });
 
-    it("can be passed in as SdkFetchOptions", async () => {
-        // TODO: implement test
+  it("can be passed in as SdkFetchOptions", async () => {
+    const uri = "https://localhost:3000";
+    const client = new BaseClient({
+      baseUri: uri,
     });
+    await staticClient._get({
+      client: client,
+      path: "",
+      rawResponse: true,
+      fetchOptions: { redirect: "manual" },
+    });
+    const passedFetchOptions = fetchStub.getCall(0).args[1];
+    assert(passedFetchOptions.hasOwnProperty("redirect"));
+    assert(passedFetchOptions.redirect === "manual");
+  });
 
-    it("can be passed in from both client config and SdkFetchOptions", async () => {
-        // TODO: implement test
+  it("can be passed in from both client config and SdkFetchOptions", async () => {
+    const uri = "https://localhost:3000";
+    const client = new BaseClient({
+      baseUri: uri,
+      fetchOptions: { size: 1000 },
     });
+    await staticClient._get({
+      client: client,
+      path: "",
+      rawResponse: true,
+      fetchOptions: { redirect: "manual" },
+    });
+    const passedFetchOptions = fetchStub.getCall(0).args[1];
+    assert(passedFetchOptions.hasOwnProperty("size"));
+    assert(passedFetchOptions.hasOwnProperty("redirect"));
+    assert(passedFetchOptions.size === 1000);
+    assert(passedFetchOptions.redirect === "manual");
+  });
 
-    it("prioritizes SdkFetchOptions over client config", async () => {
-        // TODO: implement test
+  it("prioritizes SdkFetchOptions over client config", async () => {
+    const uri = "https://localhost:3000";
+    const client = new BaseClient({
+      baseUri: uri,
+      fetchOptions: { redirect: "follow" },
     });
+    await staticClient._get({
+      client: client,
+      path: "",
+      rawResponse: true,
+      fetchOptions: { redirect: "manual" },
+    });
+    const passedFetchOptions = fetchStub.getCall(0).args[1];
+    assert(passedFetchOptions.hasOwnProperty("redirect"));
+    assert(passedFetchOptions.redirect === "manual");
+  });
 });
