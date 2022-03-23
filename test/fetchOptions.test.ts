@@ -9,6 +9,7 @@ import sinon from "sinon";
 import { BaseClient } from "../src/base/client";
 import { assert } from "chai";
 import proxyquire from "proxyquire";
+
 describe("Fetch Options", () => {
   const fetchStub = sinon.stub();
   const staticClient = proxyquire("../src/base/staticClient", {
