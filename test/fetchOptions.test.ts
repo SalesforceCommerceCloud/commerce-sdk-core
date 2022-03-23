@@ -16,7 +16,6 @@ describe("Fetch Options", () => {
   });
 
   beforeEach(() => {
-    // sinon.restore();
     fetchStub.reset();
     fetchStub.returns({
       ok: "ok",
@@ -24,6 +23,7 @@ describe("Fetch Options", () => {
       headers: { raw: (): string => "" },
     });
   });
+
   it("can be passed in from client config", async () => {
     const uri = "https://localhost:3000";
     const client = new BaseClient({
