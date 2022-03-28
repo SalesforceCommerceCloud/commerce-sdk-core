@@ -11,6 +11,7 @@ import { assert } from "chai";
 import proxyquire from "proxyquire";
 
 describe("Fetch Options", () => {
+  const uri = "https://localhost:3000";
   const fetchStub = sinon.stub();
   const staticClient = proxyquire("../src/base/staticClient", {
     "make-fetch-happen": fetchStub,
@@ -26,7 +27,6 @@ describe("Fetch Options", () => {
   });
 
   it("can be passed in from client config", async () => {
-    const uri = "https://localhost:3000";
     const client = new BaseClient({
       baseUri: uri,
       fetchOptions: { redirect: "manual" },
@@ -38,7 +38,6 @@ describe("Fetch Options", () => {
   });
 
   it("can be passed in as SdkFetchOptions", async () => {
-    const uri = "https://localhost:3000";
     const client = new BaseClient({
       baseUri: uri,
     });
@@ -54,7 +53,6 @@ describe("Fetch Options", () => {
   });
 
   it("can be passed in from both client config and SdkFetchOptions", async () => {
-    const uri = "https://localhost:3000";
     const client = new BaseClient({
       baseUri: uri,
       fetchOptions: { size: 1000 },
@@ -73,7 +71,6 @@ describe("Fetch Options", () => {
   });
 
   it("prioritizes SdkFetchOptions over client config", async () => {
-    const uri = "https://localhost:3000";
     const client = new BaseClient({
       baseUri: uri,
       fetchOptions: { redirect: "follow" },
