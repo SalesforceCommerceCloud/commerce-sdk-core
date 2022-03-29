@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 1.6.0
+
+* Fetch options are able to be passed on the client configuration level as well as on a per call basis
+* Homepage link now points to the [Salesforce Developer Portal](https://developer.salesforce.com/docs/commerce/commerce-api)
+
 ## 1.5.5
 
 * Add support for endpoints that accept `application/x-www-form-urlencoded` instead of `application/json` (i.e. SLAS).
