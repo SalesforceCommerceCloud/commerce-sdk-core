@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021, salesforce.com, inc.
+ * Copyright (c) 2022, salesforce.com, inc.
  * All rights reserved.
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -8,6 +8,7 @@ import _ from "lodash";
 import QuickLRU from "quick-lru";
 import { config } from "dotenv";
 import { OperationOptions } from "retry";
+import type { RequestInit } from "node-fetch";
 
 import { CommonParameters } from "./commonParameters";
 import { ICacheManager } from "./cacheManager";
@@ -31,6 +32,7 @@ export class ClientConfig {
   public headers?: BasicHeaders;
   public parameters?: CommonParameters;
   public retrySettings?: OperationOptions;
+  public fetchOptions?: RequestInit;
 }
 
 const DEFAULT_CLIENT_CONFIG: ClientConfig = {
