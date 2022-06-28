@@ -64,7 +64,7 @@
     "loglevel": "^1.8.0",
     "make-fetch-happen": "^8.0.14",
     "minipass-fetch": "^1.4.1",
-    "qs": "^6.10.3",
+    "qs": "^6.10.4",
     "quick-lru": "^5.1.1",
     "retry": "^0.13.1",
     "ssri": "^8.0.1",
