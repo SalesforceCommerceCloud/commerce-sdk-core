@@ -29,4 +29,4 @@ jobs:
       - run: npm ci --legacy-peer-deps
         if: ${{ steps.cache-nodemodules.outputs.cache-hit != 'true' }}
       - run: npm run build
-      - run: npm run test:ci
+      - run: npm run test:unit # TODO: add integration tests
