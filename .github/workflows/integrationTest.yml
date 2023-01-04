@@ -1,4 +1,4 @@
-name: tests
+name: integration tests
 
 on:
   push:
@@ -6,22 +6,23 @@ on:
   workflow_dispatch:
 
 jobs:
-  linux-unit-tests:
-    # strategy:
-    #   matrix:
-    #     node: [10, 12, 14, 16]
-    #   fail-fast: false
+  integration-tests:
+    strategy:
+      matrix:
+        node: [10, 12, 14, 16]
+      fail-fast: false
     runs-on: ubuntu-latest
-    container: node:16-bullseye
+    # container: node:16-bullseye
     services:
       redis:
         image: redis
+        ports: 6379
     steps:
       - uses: actions/checkout@v3
-      # - uses: actions/setup-node@v3
-      #   with:
-      #     node-version: ${{ matrix.node_version }}
-      #     cache: npm
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node_version }}
+          cache: npm
       # - name: Cache node modules
       #   id: cache-nodemodules
       #   uses: actions/cache@v3
@@ -30,9 +31,7 @@ jobs:
       #   with:
       #     path: "**/node_modules"
       #     key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+      - run: sudo apt-get install -y redis-server
       - run: npm ci --legacy-peer-deps
-        if: ${{ steps.cache-nodemodules.outputs.cache-hit != 'true' }}
       - run: npm run build
-      - run: npm run redis
       - run: npm run test:ci # TODO: add integration tests
-      - run: npm run redis:shutdown
