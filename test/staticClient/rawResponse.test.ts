@@ -48,7 +48,7 @@ describe("rawResponse tests", () => {
       rawResponse: true,
     }).then((res) => {
       expect(res).to.be.a("Response");
-      expect(nock.isDone()).to.be.false;
+      expect(nock.isDone()).to.be.true;
     });
   });
 
