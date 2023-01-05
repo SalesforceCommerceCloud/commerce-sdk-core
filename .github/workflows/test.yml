@@ -33,3 +33,5 @@ jobs:
         if: ${{ steps.cache-nodemodules.outputs.cache-hit != 'true' }}
       - run: npm run build
       - run: npm run test:ci
+      # - run: npm run test:unit
+      # - run: npm run test:integration
