@@ -26,9 +26,11 @@ jobs:
         with:
           path: "**/node_modules"
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+      - uses: ./.github/actions/redis/action.yml
+        with:
+          redis-version: 6
       - run: npm ci --legacy-peer-deps
         if: ${{ steps.cache-nodemodules.outputs.cache-hit != 'true' }}
       - run: npm run build
       - run: npm run test:unit
-      # TODO: add back in when redis is setup
-      # - run: npm run test:integration 
+      - run: npm run test:integration 
