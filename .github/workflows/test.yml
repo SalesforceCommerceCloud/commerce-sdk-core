@@ -15,8 +15,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/redis
-        with:
-          redis-version: 6
+        # with:
+        #   redis-version: 6
       - uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node_version }}
