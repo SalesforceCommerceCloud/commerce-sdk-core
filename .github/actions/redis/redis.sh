@@ -1,3 +1,5 @@
 #!/bin/sh
 
-sh -c "docker run --name redis-server --publish 6379:6379 --detach redis:$INPUT_REDIS_VERSION"
+docker_run="docker run -d -p 6379:6379 redis:$INPUT_REDIS_VERSION redis-server"
+
+sh -c "$docker_run"
