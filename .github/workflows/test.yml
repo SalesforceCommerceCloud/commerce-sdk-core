@@ -14,9 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-        with:
-          repository: ${{ github.repository }}
-      - uses: ./.github/actions/redis/action.yml
+      - uses: ./.github/actions/redis
         with:
           redis-version: 6
       - uses: actions/setup-node@v3
