@@ -2,12 +2,10 @@ name: 'Redis Server'
 
 inputs:
   redis-version:
-    description: 'Redis version to use'
+    description: 'Redis version'
     required: false
     default: 'latest'
 
 runs:
   using: 'docker'
   image: 'Dockerfile'
-  args:
-    - ${{ inputs.redis-version }}
