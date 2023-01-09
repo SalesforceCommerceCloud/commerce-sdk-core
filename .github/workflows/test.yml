@@ -14,6 +14,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: ./.github/actions/redis/action.yml
+        with:
+          redis-version: 6
       - uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node_version }}
@@ -26,9 +29,6 @@ jobs:
         with:
           path: "**/node_modules"
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-      - uses: ./.github/actions/redis/action.yml
-        with:
-          redis-version: 6
       - run: npm ci --legacy-peer-deps
         if: ${{ steps.cache-nodemodules.outputs.cache-hit != 'true' }}
       - run: npm run build
