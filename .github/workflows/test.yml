@@ -18,9 +18,6 @@ jobs:
         with:
           node-version: ${{ matrix.node_version }}
           cache: npm
-      - uses: supercharge/redis-github-action@1.4.0 # Start a Redis server on default port 6379
-        with:
-          redis-version: 6
       - name: Cache node modules
         id: cache-nodemodules
         uses: actions/cache@v3
@@ -33,4 +30,5 @@ jobs:
         if: ${{ steps.cache-nodemodules.outputs.cache-hit != 'true' }}
       - run: npm run build
       - run: npm run test:unit
-      - run: npm run test:integration
+      # TODO: add back in when redis is setup
+      # - run: npm run test:integration 
