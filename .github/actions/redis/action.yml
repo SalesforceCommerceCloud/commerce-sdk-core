@@ -9,19 +9,19 @@ inputs:
     description: 'Redis version to use'
     required: false
     default: 'latest'
-  redis-port:
-    description: 'Redis port to use and expose'
-    required: false
-    default: 6379
-  redis-container-name:
-    description: "Name of the created container. Useful if you run multiple Redis containers"
-    required: false
-    default: 'redis'
+  # redis-port:
+  #   description: 'Redis port to use and expose'
+  #   required: false
+  #   default: 6379
+  # redis-container-name:
+  #   description: "Name of the created container. Useful if you run multiple Redis containers"
+  #   required: false
+  #   default: 'redis'
 
 runs:
   using: 'docker'
   image: 'Dockerfile'
   args:
     - ${{ inputs.redis-version }}
-    - ${{ inputs.redis-port }}
-    - ${{ inputs.redis-container-name }}
+    # - ${{ inputs.redis-port }}
+    # - ${{ inputs.redis-container-name }}
