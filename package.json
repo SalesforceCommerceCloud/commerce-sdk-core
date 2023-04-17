@@ -47,7 +47,6 @@
     "test:unit": "mocha \"test/**/*.test.ts\"",
     "test:unit:ci": "npm run test:unit -- --reporter=xunit --reporter-options output=./reports/unitTests.xml"
   },
-  
   "lint-staged": {
     "*.js": [
       "eslint --fix",
