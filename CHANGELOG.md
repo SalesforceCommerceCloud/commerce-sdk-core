@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.6.1
+
+* Arrays passed as query parameters follow the comma separated format except for the `refine` query parameter which follows the repeated format
+
 ## 1.6.0
 
 * Fetch options are able to be passed on the client configuration level as well as on a per call basis
