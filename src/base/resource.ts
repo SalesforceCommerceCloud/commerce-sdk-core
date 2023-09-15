@@ -17,8 +17,9 @@ export type QueryParameters = Record<
 /**
  * A class to render a flattened URL from the parts including template
  * parameters. Out of the various options to render an array in a query string,
- * this class repeats the value for each element of the array,
- * i.e. { a: [1, 2]} => "?a=1&a=2".
+ * this class comma seperates the value for each element of the array,
+ * i.e. {a: [1, 2]} => "?a=1,2". One exception is the 'refine' query param as
+ * SCAPI expects the repeated format, i.e. {refine: [1, 2]} => "?refine=1&refine=2"
  *
  * @class Resource
  */
@@ -66,9 +67,16 @@ export class Resource {
       this.pathParameters
     );
 
-    const queryString = qs.stringify(this.queryParameters, {
-      arrayFormat: "repeat",
+    // separate 'refine' query parameter from the rest as it is encoded differently
+    const { refine, ...queryParams } = this.queryParameters;
+
+    let queryString = qs.stringify(queryParams, {
+      arrayFormat: "comma",
     });
+
+    if (refine) {
+      queryString += `&${qs.stringify({ refine }, { arrayFormat: "repeat" })}`;
+    }
 
     return `${renderedBaseUri}${renderedPath}${
       queryString ? "?" : ""

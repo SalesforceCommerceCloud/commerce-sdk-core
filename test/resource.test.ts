@@ -89,10 +89,10 @@ describe("Resource class tests", () => {
     );
   });
 
-  it("returns correct url with one query param array two element", () => {
+  it("returns correct url with one query param array two element (comma separated)", () => {
     assert.strictEqual(
       new Resource("baseUri", {}, "/path", {}, { q1: ["v1", "v2"] }).toString(),
-      "baseUri/path?q1=v1&q1=v2"
+      "baseUri/path?q1=v1%2Cv2"
     );
   });
 
@@ -125,7 +125,7 @@ describe("Resource class tests", () => {
         {},
         { q1: ["v1", "v2"], query_param_2: "value 2" } // eslint-disable-line
       ).toString(),
-      "baseUri/path?q1=v1&q1=v2&query_param_2=value%202"
+      "baseUri/path?q1=v1%2Cv2&query_param_2=value%202"
     );
   });
 
@@ -181,6 +181,23 @@ describe("Resource class tests", () => {
     assert.strictEqual(
       new Resource("baseUri", {}, "/path", {}, { bool: false }).toString(),
       "baseUri/path?bool=false"
+    );
+  });
+
+  it("returns 'refine' query parameter in expanded format instead of comma seperated", () => {
+    assert.strictEqual(
+      new Resource(
+        "baseUri",
+        {},
+        "/path",
+        {},
+        {
+          refine: ["price=(0..150)", "c_refinementColor=Red"],
+          expand: ["availability", "images"],
+        }
+      ).toString(),
+      "baseUri/path?expand=availability%2Cimages&refine=price%3D%280..150%29&refine=c_refinementColor%3DRed"
+      // URI decoded: baseUri/path?expand=availability,images&refine=price=(0..150)&refine=c_refinementColor=Red
     );
   });
 });
