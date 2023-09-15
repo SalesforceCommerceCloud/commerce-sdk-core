@@ -184,7 +184,7 @@ describe("Resource class tests", () => {
     );
   });
 
-  it("returns 'refine' query parameter in expanded format instead of comma seperated", () => {
+  it("returns 'refine' query parameter in expanded format instead of comma separated", () => {
     assert.strictEqual(
       new Resource(
         "baseUri",
