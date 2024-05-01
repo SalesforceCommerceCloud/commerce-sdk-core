@@ -12,7 +12,7 @@ export {
   ResponseError,
 } from "./base/client";
 
-import { _get, _delete, _patch, _post, _put } from "./base/staticClient";
+import { _get, _delete, _patch, _post, _put, runFetch } from "./base/staticClient";
 
 export {
   getObjectFromResponse,
@@ -26,6 +26,7 @@ export const StaticClient = {
   patch: _patch,
   post: _post,
   put: _put,
+  runFetch,
 };
 
 export { IAuthToken, ShopperToken, stripBearer } from "./base/authHelper";

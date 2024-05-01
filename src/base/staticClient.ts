@@ -175,7 +175,7 @@ export const transformRequestBody = (
  * @returns Either the Response object or the DTO inside it wrapped in a promise,
  * depending upon options.rawResponse
  */
-async function runFetch(
+export async function runFetch(
   method: "delete" | "get" | "patch" | "post" | "put",
   options: SdkFetchOptions
 ): Promise<object> {
