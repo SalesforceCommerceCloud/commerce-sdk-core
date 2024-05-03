@@ -12,7 +12,14 @@ export {
   ResponseError,
 } from "./base/client";
 
-import { _get, _delete, _patch, _post, _put, runFetch } from "./base/staticClient";
+import {
+  _get,
+  _delete,
+  _patch,
+  _post,
+  _put,
+  runFetch,
+} from "./base/staticClient";
 
 export {
   getObjectFromResponse,

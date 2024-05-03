@@ -27,4 +27,4 @@ export type CustomApiParameters = {
   endpointName?: string;
   apiName?: string;
   apiVersion?: string;
-}
+};
