@@ -34,6 +34,7 @@ export type SdkFetchOptions = {
   rawResponse?: boolean;
   retrySettings?: OperationOptions;
   fetchOptions?: RequestInit;
+  disableTransformBody?: boolean;
   body?: unknown;
 };
 
@@ -217,7 +218,7 @@ export async function runFetch(
     },
   };
 
-  if (typeof options.body !== "undefined") {
+  if (typeof options.body !== "undefined" && !options.disableTransformBody) {
     fetchOptions.body = transformRequestBody(options.body, fetchOptions);
   }
 
