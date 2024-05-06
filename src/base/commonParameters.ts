@@ -22,9 +22,3 @@ export type CommonParameters = {
   siteId?: string;
   version?: string;
 };
-
-export type CustomApiParameters = {
-  endpointName?: string;
-  apiName?: string;
-  apiVersion?: string;
-};

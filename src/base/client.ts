@@ -10,7 +10,7 @@ import { config } from "dotenv";
 import { OperationOptions } from "retry";
 import type { RequestInit } from "node-fetch";
 
-import { CommonParameters, CustomApiParameters } from "./commonParameters";
+import { CommonParameters } from "./commonParameters";
 import { ICacheManager } from "./cacheManager";
 import { CacheManagerKeyv } from "./cacheManagerKeyv";
 import { BasicHeaders } from "./resource";
@@ -26,11 +26,12 @@ config();
  *
  * @class ClientConfig
  */
-export class ClientConfig {
+export class ClientConfig<Params extends CommonParameters = CommonParameters> {
   public baseUri?: string;
   public cacheManager?: ICacheManager;
   public headers?: BasicHeaders;
-  public parameters?: CommonParameters & CustomApiParameters;
+  // Params defaults to CommonParameters
+  public parameters?: Params;
   public retrySettings?: OperationOptions;
   public fetchOptions?: RequestInit;
 }
