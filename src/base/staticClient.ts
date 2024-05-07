@@ -218,8 +218,10 @@ export async function runFetch(
     },
   };
 
-  if (typeof options.body !== "undefined" && !options.disableTransformBody) {
-    fetchOptions.body = transformRequestBody(options.body, fetchOptions);
+  if (typeof options.body !== "undefined") {
+    fetchOptions.body = options.disableTransformBody
+      ? (options.body as BodyInit)
+      : transformRequestBody(options.body, fetchOptions);
   }
 
   logFetch(resource, fetchOptions);
