@@ -34,6 +34,7 @@ export type SdkFetchOptions = {
   rawResponse?: boolean;
   retrySettings?: OperationOptions;
   fetchOptions?: RequestInit;
+  disableTransformBody?: boolean;
   body?: unknown;
 };
 
@@ -175,7 +176,7 @@ export const transformRequestBody = (
  * @returns Either the Response object or the DTO inside it wrapped in a promise,
  * depending upon options.rawResponse
  */
-async function runFetch(
+export async function runFetch(
   method: "delete" | "get" | "patch" | "post" | "put",
   options: SdkFetchOptions
 ): Promise<object> {
@@ -218,7 +219,9 @@ async function runFetch(
   };
 
   if (typeof options.body !== "undefined") {
-    fetchOptions.body = transformRequestBody(options.body, fetchOptions);
+    fetchOptions.body = options.disableTransformBody
+      ? (options.body as BodyInit)
+      : transformRequestBody(options.body, fetchOptions);
   }
 
   logFetch(resource, fetchOptions);

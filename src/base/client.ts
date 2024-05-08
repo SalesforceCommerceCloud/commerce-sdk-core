@@ -26,11 +26,12 @@ config();
  *
  * @class ClientConfig
  */
-export class ClientConfig {
+export class ClientConfig<Params extends CommonParameters = CommonParameters> {
   public baseUri?: string;
   public cacheManager?: ICacheManager;
   public headers?: BasicHeaders;
-  public parameters?: CommonParameters;
+  // Params defaults to CommonParameters
+  public parameters?: Params;
   public retrySettings?: OperationOptions;
   public fetchOptions?: RequestInit;
 }
