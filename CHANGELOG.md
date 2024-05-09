@@ -2,7 +2,7 @@
 
 ## 1.7.0
 
-* Expose underlying helper function for fetch calls
+* Expose underlying helper function for fetch calls [#110](https://github.com/SalesforceCommerceCloud/commerce-sdk-core/pull/110)
 
 ## 1.6.1
 
