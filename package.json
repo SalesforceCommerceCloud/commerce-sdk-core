@@ -1,6 +1,6 @@
 {
   "name": "@commerce-apps/core",
-  "version": "1.6.1",
+  "version": "1.7.0",
   "description": "The Core package provides a variety of functions that make interacting with Salesforce Commerce APIs easy",
   "homepage": "https://developer.salesforce.com/docs/commerce/commerce-api/overview",
   "repository": {
