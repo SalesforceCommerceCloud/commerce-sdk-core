@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.7.0
+
+* Expose underlying helper function for fetch calls [#110](https://github.com/SalesforceCommerceCloud/commerce-sdk-core/pull/110)
+
 ## 1.6.1
 
 * Arrays passed as query parameters follow the comma separated format except for the `refine` query parameter which follows the repeated format
