@@ -72,7 +72,7 @@ export class ResponseError extends Error {
  */
 export async function getObjectFromResponse(
   response: Response
-): Promise<object> {
+): Promise<object | Record<string, unknown>> {
   if (response.ok || response.status === 304) {
     const text = await response.text();
     // It's ideal to get "{}" for an empty response body, but we won't throw if it's truly empty

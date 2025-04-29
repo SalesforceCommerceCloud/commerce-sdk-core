@@ -15,7 +15,7 @@ import { StaticClient } from "../../src/";
  * Cache eviction tests to verify cached content
  * for Salesforce Commerce SDK cache manager interface.
  */
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export default () => {
   const expect = chai.expect;
   const RESPONSE_DATA = { mock: "data" };
@@ -42,7 +42,6 @@ export default () => {
         // construct request object with url
         const request = {
           url: "https://somewhere/validate-fresh",
-          // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
           headers: { delete: (s) => s },
         };
         // options object with cacheManager
