@@ -17,7 +17,8 @@
         "noImplicitReturns": true,
         "noImplicitThis": true,
         "preserveConstEnums": true,
-        "outDir": "./dist"
+        "outDir": "./dist",
+        "skipLibCheck": true
     },
     // NOTE: Everything except what you want compiled into JS should be in the exclusions.
     "exclude": [
