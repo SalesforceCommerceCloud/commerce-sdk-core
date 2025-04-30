@@ -239,7 +239,7 @@ export async function runFetch(
  * @returns Either the Response object or the DTO inside it wrapped in a promise,
  * depending upon options.rawResponse
  */
-export async function _get(options: SdkFetchOptionsNoBody): Promise<object> {
+export async function _get(options: SdkFetchOptions): Promise<object> {
   return runFetch("get", options);
 }
 
@@ -251,7 +251,7 @@ export async function _get(options: SdkFetchOptionsNoBody): Promise<object> {
  * @returns Either the Response object or the DTO inside it wrapped in a promise,
  * depending upon options.rawResponse
  */
-export async function _delete(options: SdkFetchOptionsNoBody): Promise<object> {
+export async function _delete(options: SdkFetchOptions): Promise<object> {
   return runFetch("delete", options);
 }
 
@@ -264,7 +264,7 @@ export async function _delete(options: SdkFetchOptionsNoBody): Promise<object> {
  * depending upon options.rawResponse
  */
 export async function _patch(
-  options: SdkFetchOptionsWithBody
+  options: SdkFetchOptions
 ): Promise<object> {
   return runFetch("patch", options);
 }
@@ -277,7 +277,7 @@ export async function _patch(
  * @returns Either the Response object or the DTO inside it wrapped in a promise,
  * depending upon options.rawResponse
  */
-export async function _post(options: SdkFetchOptionsWithBody): Promise<object> {
+export async function _post(options: SdkFetchOptions): Promise<object> {
   return runFetch("post", options);
 }
 
@@ -289,6 +289,6 @@ export async function _post(options: SdkFetchOptionsWithBody): Promise<object> {
  * @returns Either the Response object or the DTO inside it wrapped in a promise,
  * depending upon options.rawResponse
  */
-export async function _put(options: SdkFetchOptionsWithBody): Promise<object> {
+export async function _put(options: SdkFetchOptions): Promise<object> {
   return runFetch("put", options);
 }

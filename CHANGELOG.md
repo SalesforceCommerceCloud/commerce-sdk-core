@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 1.8.0
+* Make request `body` for HTTP endpoint calls optional [#117](https://github.com/SalesforceCommerceCloud/commerce-sdk-core/pull/117/files)
+
 ## 1.7.0
 
 * Expose underlying helper function for fetch calls [#110](https://github.com/SalesforceCommerceCloud/commerce-sdk-core/pull/110)
