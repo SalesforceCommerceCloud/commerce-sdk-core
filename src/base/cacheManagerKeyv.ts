@@ -50,6 +50,7 @@ export class CacheManagerKeyv<T> implements ICacheManager {
     this.keyv.on("error", sdkLogger.error);
   }
 
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   addCacheHeaders(resHeaders, path, key, hash, time): void {
     resHeaders.set(customCacheHeaders.localCache, encodeURIComponent(path));
     resHeaders.set(customCacheHeaders.localCacheKey, encodeURIComponent(key));
@@ -156,7 +157,7 @@ export class CacheManagerKeyv<T> implements ICacheManager {
    *
    * @returns A valid cached response or undefined
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types
   async match(req: fetch.Request, opts?: any): Promise<fetch.Response> {
     if (!req) {
       throw new Error("Valid request object required to match");
@@ -232,7 +233,7 @@ export class CacheManagerKeyv<T> implements ICacheManager {
   async put(
     req: fetch.Request,
     response: fetch.Response,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types
     opts?: any
   ): Promise<fetch.Response> {
     opts = opts || {};
@@ -300,7 +301,7 @@ export class CacheManagerKeyv<T> implements ICacheManager {
    *
    * @returns true is anything is present to delete, false otherwise
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/no-unused-vars
   async delete(req: fetch.Request, opts?: any): Promise<boolean> {
     if (!req) {
       throw new Error("Valid request object required to delete");

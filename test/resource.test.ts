@@ -110,7 +110,7 @@ describe("Resource class tests", () => {
         {},
         "/path",
         {},
-        { q1: "v1", query_param_2: "value 2" } // eslint-disable-line
+        { q1: "v1", query_param_2: "value 2" }
       ).toString(),
       "baseUri/path?q1=v1&query_param_2=value%202"
     );
@@ -123,7 +123,7 @@ describe("Resource class tests", () => {
         {},
         "/path",
         {},
-        { q1: ["v1", "v2"], query_param_2: "value 2" } // eslint-disable-line
+        { q1: ["v1", "v2"], query_param_2: "value 2" }
       ).toString(),
       "baseUri/path?q1=v1%2Cv2&query_param_2=value%202"
     );

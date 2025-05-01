@@ -15,10 +15,24 @@
   },
   "reportUnusedDisableDirectives": true,
   "rules": {
-    "@typescript-eslint/interface-name-prefix": [
+    "@typescript-eslint/naming-convention": [
       "error",
       {
-        "prefixWithI": "always"
+        "selector": "interface",
+        "format": ["PascalCase"],
+        "custom": {
+          "regex": "^I[A-Z]",
+          "match": true
+        }
+      }
+    ],
+    "@typescript-eslint/ban-types": [
+      "error",
+      {
+        "types": {
+          "object": false
+        },
+        "extendDefaults": true
       }
     ],
     "header/header": [

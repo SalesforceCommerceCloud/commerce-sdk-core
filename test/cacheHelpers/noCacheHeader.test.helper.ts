@@ -15,7 +15,7 @@ import { StaticClient } from "../../src/";
  * Basic tests that verifies cached content in absence of cache headers
  * for Salesforce Commerce SDK cache manager interface.
  */
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export default () => {
   const expect = chai.expect;
   const RESPONSE_DATA = { mock: "data" };
