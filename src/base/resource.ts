@@ -41,9 +41,21 @@ export class Resource {
    * @returns Path with actual parameters
    */
   substitutePathParameters(path = "", parameters: PathParameters = {}): string {
+    const encodedPathParams: PathParameters = {};
+
+    Object.keys(parameters || {}).forEach((key) => {
+      const value = parameters?.[key];
+      if (value) {
+        encodedPathParams[key] = encodeURIComponent(value);
+      }
+    });
+
     return path.replace(/\{([^}]+)\}/g, (_entireMatch, param) => {
-      if (parameters.hasOwnProperty(param) && parameters[param] !== undefined) {
-        return parameters[param];
+      if (
+        encodedPathParams.hasOwnProperty(param) &&
+        encodedPathParams[param] !== undefined
+      ) {
+        return encodedPathParams[param];
       }
       throw new Error(
         `Failed to find a value for required path parameter '${param}'`

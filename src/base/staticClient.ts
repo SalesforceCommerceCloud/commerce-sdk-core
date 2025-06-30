@@ -263,9 +263,7 @@ export async function _delete(options: SdkFetchOptions): Promise<object> {
  * @returns Either the Response object or the DTO inside it wrapped in a promise,
  * depending upon options.rawResponse
  */
-export async function _patch(
-  options: SdkFetchOptions
-): Promise<object> {
+export async function _patch(options: SdkFetchOptions): Promise<object> {
   return runFetch("patch", options);
 }
 

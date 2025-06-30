@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 2.0.0
+* Path parameter special characters are encoded by default
+
 ## 1.8.0
 * Make request `body` for HTTP endpoint calls optional [#117](https://github.com/SalesforceCommerceCloud/commerce-sdk-core/pull/117/files)
 
