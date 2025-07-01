@@ -200,4 +200,13 @@ describe("Resource class tests", () => {
       // URI decoded: baseUri/path?expand=availability,images&refine=price=(0..150)&refine=c_refinementColor=Red
     );
   });
+
+  it("returns correct url with path param with special characters", () => {
+    assert.strictEqual(
+      new Resource("https://example.com", {}, "/path/with/{special}/chars", {
+        special: "test!@#$%",
+      }).toString(),
+      "https://example.com/path/with/test!%40%23%24%25/chars"
+    );
+  });
 });
