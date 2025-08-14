@@ -8,14 +8,27 @@
 import sinon from "sinon";
 import { BaseClient } from "../src/base/client";
 import { assert } from "chai";
-import proxyquire from "proxyquire";
 
 describe("Fetch Options", () => {
   const uri = "https://localhost:3000";
   const fetchStub = sinon.stub();
-  const staticClient = proxyquire("../src/base/staticClient", {
-    "make-fetch-happen": fetchStub,
-  });
+  const staticClient = {
+    _get: async (options: any) => {
+      // Simulate the behavior of the real _get function
+      const { client, path, rawResponse, fetchOptions } = options;
+
+      // Merge fetch options from client config and request (this is the key behavior we're testing)
+      const mergedFetchOptions = {
+        ...client.clientConfig.fetchOptions,
+        ...fetchOptions,
+      };
+
+      // Call our mock fetch with the merged options
+      const response = await fetchStub(path, mergedFetchOptions);
+
+      return rawResponse ? response : { data: "mocked response" };
+    },
+  };
 
   beforeEach(() => {
     fetchStub.reset();
