@@ -1,3 +1,4 @@
 ignores:
   # Include an explanation of why a package is ingored!
   - node-fetch # Only a type is used, so only @types/node-fetch is needed
+  - tslib # Required for TypeScript compilation
