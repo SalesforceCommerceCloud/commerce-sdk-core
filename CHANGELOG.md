@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## Unreleased
+* Raise the `jsonwebtoken` minimum to `^9.0.3` so the package loads on Node 26. Earlier versions depend on `jwa@1.x`, which crashes on load because Node 26 removed `SlowBuffer`
+* CI now tests Node 24 and 26, and the publish workflow and `.nvmrc` use Node 24. The `mocha` dev dependency is raised to `^11` because `mocha@9` fails to start on Node 26
+
 ## 2.0.0
 * Path parameter special characters are encoded by default
 
