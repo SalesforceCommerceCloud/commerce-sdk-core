@@ -78,7 +78,7 @@
     "@types/jsonwebtoken": "^8.5.8",
     "@types/lodash": "^4.14.178",
     "@types/make-fetch-happen": "^8.0.2",
-    "@types/mocha": "^9.1.0",
+    "@types/mocha": "^10.0.10",
     "@types/node": "^12.20.42",
     "@types/node-fetch": "^2.5.12",
     "@types/qs": "^6.9.7",
